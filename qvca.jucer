@@ -45,6 +45,7 @@
         <MODULEPATH id="juce_audio_devices" path="../../juce/modules"/>
         <MODULEPATH id="juce_audio_processors" path="../../juce/modules"/>
         <MODULEPATH id="juce_audio_plugin_client" path="../../juce/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../juce/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
     <VS2015 targetFolder="Builds/VisualStudio2015" vstFolder="c:\SDKs\vstsdk2.4"
@@ -66,6 +67,7 @@
         <MODULEPATH id="juce_audio_devices" path="../../juce/modules"/>
         <MODULEPATH id="juce_audio_processors" path="../../juce/modules"/>
         <MODULEPATH id="juce_audio_plugin_client" path="../../juce/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../juce/modules"/>
       </MODULEPATHS>
     </VS2015>
     <LINUX_MAKE targetFolder="Builds/Linux" vstFolder="~/SDKs/vstsdk2.4" vst3Folder="~/SDKs/vst3-sdk">
@@ -86,12 +88,14 @@
         <MODULEPATH id="juce_audio_devices" path="../../juce/modules"/>
         <MODULEPATH id="juce_audio_processors" path="../../juce/modules"/>
         <MODULEPATH id="juce_audio_plugin_client" path="../../juce/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../juce/modules"/>
       </MODULEPATHS>
     </LINUX_MAKE>
   </EXPORTFORMATS>
   <MODULES>
     <MODULES id="juce_audio_basics" showAllCode="1" useLocalCopy="0"/>
     <MODULES id="juce_audio_devices" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_audio_formats" showAllCode="1" useLocalCopy="0"/>
     <MODULES id="juce_audio_plugin_client" showAllCode="1" useLocalCopy="0"/>
     <MODULES id="juce_audio_processors" showAllCode="1" useLocalCopy="0"/>
     <MODULES id="juce_core" showAllCode="1" useLocalCopy="0"/>
@@ -101,5 +105,6 @@
     <MODULES id="juce_gui_basics" showAllCode="1" useLocalCopy="0"/>
     <MODULES id="juce_gui_extra" showAllCode="1" useLocalCopy="0"/>
   </MODULES>
-  <JUCEOPTIONS JUCE_QUICKTIME="disabled"/>
+  <JUCEOPTIONS JUCE_QUICKTIME="disabled" JUCE_USE_FLAC="disabled" JUCE_USE_OGGVORBIS="disabled"
+               JUCE_USE_MP3AUDIOFORMAT="disabled" JUCE_USE_LAME_AUDIO_FORMAT="disabled"/>
 </JUCERPROJECT>
