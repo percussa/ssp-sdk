@@ -26,7 +26,7 @@
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
-    <LINUX_MAKE targetFolder="Builds/Linux" vstFolder="~/SDKs/vst3-sdk/VST2_SDK"
+    <LINUX_MAKE targetFolder="Builds/Linux" vstFolder="~/SDKs/vst3-sdk/VST3_SDK"
                 vst3Folder="~/SDKs/vst3-sdk">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" libraryPath="/usr/X11R6/lib/" isDebug="1" optimisation="1"
