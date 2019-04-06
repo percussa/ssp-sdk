@@ -26,7 +26,8 @@
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
-    <LINUX_MAKE targetFolder="Builds/Linux" vstFolder="~/SDKs/vstsdk2.4" vst3Folder="~/SDKs/vst3-sdk">
+    <LINUX_MAKE targetFolder="Builds/Linux" vstFolder="~/SDKs/vst3-sdk/VST2_SDK"
+                vst3Folder="~/SDKs/vst3-sdk">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" libraryPath="/usr/X11R6/lib/" isDebug="1" optimisation="1"
                        targetName="qvca" binaryPath="Builds/Linux/build/Debug" linuxArchitecture=""/>
