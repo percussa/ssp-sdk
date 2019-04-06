@@ -2,7 +2,7 @@
 
 <JUCERPROJECT id="LFrQVa" name="qvca" projectType="audioplug" version="1.0.0"
               bundleIdentifier="com.percussa.qvca" includeBinaryInAppConfig="1"
-              buildVST="0" buildVST3="1" buildAU="0" buildRTAS="0" buildAAX="0"
+              buildVST="1" buildVST3="1" buildAU="0" buildRTAS="0" buildAAX="0"
               pluginName="qvca" pluginDesc="qvca" pluginManufacturer="percussa"
               pluginManufacturerCode="Perc" pluginCode="Pvca" pluginChannelConfigs="{8, 8}"
               pluginIsSynth="0" pluginWantsMidiIn="0" pluginProducesMidiOut="0"
