@@ -5,7 +5,7 @@
               buildVST="0" buildVST3="1" buildAU="0" buildRTAS="0" buildAAX="0"
               pluginName="qvca" pluginDesc="qvca" pluginManufacturer="percussa"
               pluginManufacturerCode="Perc" pluginCode="Pvca" pluginChannelConfigs="{8, 8}"
-              pluginIsSynth="0" pluginWantsMidiIn="0" pluginProducesMidiOut="0"
+              pluginIsSynth="0" pluginWantsMidiIn="1" pluginProducesMidiOut="1"
               pluginSilenceInIsSilenceOut="0" pluginEditorRequiresKeys="0"
               pluginAUExportPrefix="qvcaAU" pluginRTASCategory="" aaxIdentifier="com.percussa.qvca"
               pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="3.1.1"
