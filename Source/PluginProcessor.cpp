@@ -1,5 +1,7 @@
-
 // see header file for license 
+
+#include <cstring> 
+#include <stdexcept> 
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
@@ -7,7 +9,7 @@
 
 QVCA::QVCA()
 {
-	memset(paramValues, 0, sizeof(paramValues)); 
+	std::memset(paramValues, 0, sizeof(paramValues)); 
 }
 
 QVCA::~QVCA()
@@ -21,7 +23,7 @@ const String QVCA::getName() const
 
 int QVCA::getNumParameters()
 {
-    return Percussa::sspLast;
+    return numParams; 
 }
 
 float QVCA::getParameter (int index)
@@ -29,7 +31,6 @@ float QVCA::getParameter (int index)
 	if (index < Percussa::sspFirst) return 0.00f; 
 	if (index >= Percussa::sspLast) return 0.00f; 
 
-	// add offset so index starts from 0 
 	return paramValues[index-Percussa::sspFirst];
 }
 
@@ -56,62 +57,47 @@ void QVCA::setParameter (int index, float newValue)
 	// on triggering updates on a diferent thread from within 
 	// setParameter(). 
 
-	// if not an ssp parameter then return 
 	if (index < Percussa::sspFirst) return; 
 	if (index >= Percussa::sspLast) return; 
-
-	// add offset so index starts from 0 
-	paramValues[index-Percussa::sspFirst] = newValue;  
 
 	// use this if you need to do something special 
 	// to process parameter  
 	switch(index) { 
 		case Percussa::sspEnc1:
-			break; 
 		case Percussa::sspEnc2: 
-			break; 
 		case Percussa::sspEnc3:
-			break; 
 		case Percussa::sspEnc4: 
+		{
+			if (newValue > 0) {  
+				paramValues[index-Percussa::sspFirst]++; 
+			} else if (newValue < 0) { 
+				paramValues[index-Percussa::sspFirst]--; 
+			}
 			break; 
+		}
 		case Percussa::sspEncSw1: 
-			break; 
 		case Percussa::sspEncSw2: 
-			break; 
 		case Percussa::sspEncSw3: 
-			break; 
 		case Percussa::sspEncSw4: 
-			break; 
 		case Percussa::sspSw1: 
-			break; 
 		case Percussa::sspSw2: 
-			break; 
 		case Percussa::sspSw3: 
-			break; 
 		case Percussa::sspSw4: 
-			break; 
 		case Percussa::sspSw5: 
-			break; 
 		case Percussa::sspSw6: 
-			break; 
 		case Percussa::sspSw7: 
-			break; 
 		case Percussa::sspSw8: 
-			break; 
 		case Percussa::sspSwLeft: 
-			break; 
 		case Percussa::sspSwRight: 
-			break; 
 		case Percussa::sspSwUp: 
-			break; 
 		case Percussa::sspSwDown: 
-			break; 
 		case Percussa::sspSwShiftL:
-			break; 
 		case Percussa::sspSwShiftR: 
-			break; 
 		default:
+		{
+			paramValues[index-Percussa::sspFirst] = newValue;  
 			break; 
+		}
 	}
 }
 
@@ -290,6 +276,17 @@ void QVCA::getStateInformation (MemoryBlock& destData)
 	// IMPORTANT: as a plugin developer you are responsible for resizing the 
 	// memory block passed by reference to this function, befor writing into it.
 	// the memory block passed has zero size initially when entering this function.   
+	// calling append() on the memory block will automatically grow the block. 
+
+	// write header consisting of plugin name and version string 
+	destData.append(JucePlugin_Name, sizeof(JucePlugin_Name)); 
+	destData.append(JucePlugin_VersionString, sizeof(JucePlugin_VersionString)); 
+
+	// write parameter value array 
+	destData.append(paramValues, sizeof(paramValues)); 
+
+	// write footer
+	destData.append(JucePlugin_Name, sizeof(JucePlugin_Name)); 
 }
 
 void QVCA::setStateInformation (const void* data, int sizeInBytes)
@@ -299,6 +296,26 @@ void QVCA::setStateInformation (const void* data, int sizeInBytes)
 
 	// The SSP software will call this function after reading the state from a preset
 	// file, when the user loads a new preset. 
+
+	// code below can probably use additional error handling and bounds checking, 
+	// it's just here as a general example and not guaranteed to be reliable. 
+
+	// read and compare header consisting of plugin name and version 
+	if (std::memcmp(data, JucePlugin_Name, sizeof(JucePlugin_Name)) != 0) 
+		throw std::runtime_error("error reading plugin name"); 
+	data += sizeof(JucePlugin_Name); 
+
+	if (std::memcmp(data, JucePlugin_VersionString, sizeof(JucePlugin_VersionString)) != 0) 
+		throw std::runtime_error("error reading plugin version string"); 
+	data += sizeof(JucePlugin_VersionString); 
+
+	// restore parameter values 
+	std::memcpy(paramValues, data, sizeof(paramValues)); 	
+	data += sizeof(paramValues); 
+
+	// read and compare footer 
+	if (std::memcmp(data, JucePlugin_Name, sizeof(JucePlugin_Name)) != 0) 
+		throw std::runtime_error("error reading plugin name"); 
 }
 
 // This creates new instances of the plugin..

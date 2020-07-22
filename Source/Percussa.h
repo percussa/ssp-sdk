@@ -124,7 +124,6 @@ namespace Percussa {
 
 		sspLast, 
 	}; 
-
 }; 
 
 #endif

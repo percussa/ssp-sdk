@@ -22,7 +22,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "Percussa.h" 
 
-class QVCA  : public AudioProcessor
+class QVCA: public AudioProcessor
 {
 public:
 	QVCA();
@@ -65,8 +65,8 @@ public:
 	void setStateInformation (const void* data, int sizeInBytes) override;
 
 private:
-	// see Percussa.h 
-	float paramValues[Percussa::sspLast-Percussa::sspFirst]; 
+	static const int numParams = Percussa::sspLast-Percussa::sspFirst; 
+	float paramValues[numParams]; 
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (QVCA)
 };
