@@ -286,6 +286,10 @@ void QVCA::getStateInformation (MemoryBlock& destData)
 
 	// The SSP software will call this function to capture the state of your plugin
 	// and will store the state inside its preset files when saved. 
+
+	// IMPORTANT: as a plugin developer you are responsible for resizing the 
+	// memory block passed by reference to this function, befor writing into it.
+	// the memory block passed has zero size initially when entering this function.   
 }
 
 void QVCA::setStateInformation (const void* data, int sizeInBytes)
