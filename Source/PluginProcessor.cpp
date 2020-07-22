@@ -36,16 +36,15 @@ float QVCA::getParameter (int index)
 
 void QVCA::setParameter (int index, float newValue)
 {
-	//Logger::writeToLog(String::formatted("QVCA::setParameter: index=%d newValue=%4.2f", index, newValue)); 
-
-	// see Percussa.h for more info about the parameters below 
-
-	// The SSP's software does not provide access to your 
-	// parameters from outside your plugin code, 
-	// so your plugin's editor (GUI) is what is used to 
-	// see and change parameters using the SSP's hardware 
-	// controls (provided directly to you via the VST parameter
-	// interface here). 
+	// The SSP's software uses VST parameters to pass the state 
+	// of its hardware buttons and encoders to your plugin. 
+	// See Percussa.h, these parameters begin at sspFirst and 
+	// end at sspLast. There are also special parameters passed
+	// to indicate which of the inputs and outputs of the 
+	// VST module (which hosts the plugin) are enabled. 
+	// You can add your own VST parameters starting at sspLast, 
+	// if you wish, so your plugin can also be used with desktop
+	// DAWs. 
 
 	// Calls to the setParameter function of your VST plugin 
 	// might be done from the ssp's software audio callback 
@@ -57,24 +56,27 @@ void QVCA::setParameter (int index, float newValue)
 	// on triggering updates on a diferent thread from within 
 	// setParameter(). 
 
+	//Logger::writeToLog(String::formatted(
+	//	"QVCA::setParameter: index=%d newValue=%4.2f", 
+	//		index, newValue)); 
+
 	if (index < Percussa::sspFirst) return; 
 	if (index >= Percussa::sspLast) return; 
 
-	// use this if you need to do something special 
-	// to process parameter  
 	switch(index) { 
 		case Percussa::sspEnc1:
 		case Percussa::sspEnc2: 
 		case Percussa::sspEnc3:
 		case Percussa::sspEnc4: 
 		{
-			if (newValue > 0) {  
+			if (newValue > 0.5) {  
 				paramValues[index-Percussa::sspFirst]++; 
-			} else if (newValue < 0) { 
+			} else if (newValue < 0.5) { 
 				paramValues[index-Percussa::sspFirst]--; 
 			}
 			break; 
 		}
+
 		case Percussa::sspEncSw1: 
 		case Percussa::sspEncSw2: 
 		case Percussa::sspEncSw3: 
@@ -93,6 +95,57 @@ void QVCA::setParameter (int index, float newValue)
 		case Percussa::sspSwDown: 
 		case Percussa::sspSwShiftL:
 		case Percussa::sspSwShiftR: 
+
+		case Percussa::sspOutEn1: 
+		case Percussa::sspOutEn2: 
+		case Percussa::sspOutEn3: 
+		case Percussa::sspOutEn4: 
+		case Percussa::sspOutEn5: 
+		case Percussa::sspOutEn6: 
+		case Percussa::sspOutEn7: 
+		case Percussa::sspOutEn8: 
+		case Percussa::sspOutEn9: 
+		case Percussa::sspOutEn10: 
+		case Percussa::sspOutEn11: 
+		case Percussa::sspOutEn12: 
+		case Percussa::sspOutEn13: 
+		case Percussa::sspOutEn14: 
+		case Percussa::sspOutEn15: 
+		case Percussa::sspOutEn16: 
+		case Percussa::sspOutEn17: 
+		case Percussa::sspOutEn18: 
+		case Percussa::sspOutEn19: 
+		case Percussa::sspOutEn20: 
+		case Percussa::sspOutEn21: 
+		case Percussa::sspOutEn22: 
+		case Percussa::sspOutEn23: 
+		case Percussa::sspOutEn24: 
+
+		case Percussa::sspInEn1: 
+		case Percussa::sspInEn2: 
+		case Percussa::sspInEn3: 
+		case Percussa::sspInEn4: 
+		case Percussa::sspInEn5: 
+		case Percussa::sspInEn6: 
+		case Percussa::sspInEn7: 
+		case Percussa::sspInEn8: 
+		case Percussa::sspInEn9: 
+		case Percussa::sspInEn10: 
+		case Percussa::sspInEn11: 
+		case Percussa::sspInEn12: 
+		case Percussa::sspInEn13: 
+		case Percussa::sspInEn14: 
+		case Percussa::sspInEn15: 
+		case Percussa::sspInEn16: 
+		case Percussa::sspInEn17: 
+		case Percussa::sspInEn18: 
+		case Percussa::sspInEn19: 
+		case Percussa::sspInEn20: 
+		case Percussa::sspInEn21: 
+		case Percussa::sspInEn22: 
+		case Percussa::sspInEn23: 
+		case Percussa::sspInEn24: 
+
 		default:
 		{
 			paramValues[index-Percussa::sspFirst] = newValue;  
@@ -176,7 +229,8 @@ void QVCA::setCurrentProgram (int index)
 	// Program numbers are not stored or recalled from SSP preset files. It's up to you 
 	// as a plugin developer how you store your presets. The SSP software will list all 
 	// available programs on the P-page of the VST module. It will use the state get/set 
-	// functions below to store and recall state of your plugin. 
+	// functions below to store and recall state of your plugin, when it writes/reads a 
+	// SSP preset files.  
 }
 
 const String QVCA::getProgramName (int index)

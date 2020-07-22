@@ -10,7 +10,7 @@ QVCAEditor::QVCAEditor (QVCA& p)
 	// set this to true to see the parameter values update 
 	// in the vst plugin GUI (editor) when turning encoders/
 	// pushing buttons 
-	showParamValues = true; 
+	showParamValues = false; 
 
 	setSize (1600, 480);
 
