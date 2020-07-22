@@ -186,8 +186,11 @@ int QVCA::getCurrentProgram()
 
 void QVCA::setCurrentProgram (int index)
 {
-	// see below (functions for storing/recalling state info) 
-	// for more info about what the SSP's software stores and recalls for your plugin 
+	// The SSP software allows the user to switch programs on the P-page of the VST module. 
+	// Program numbers are not stored or recalled from SSP preset files. It's up to you 
+	// as a plugin developer how you store your presets. The SSP software will list all 
+	// available programs on the P-page of the VST module. It will use the state get/set 
+	// functions below to store and recall state of your plugin. 
 }
 
 const String QVCA::getProgramName (int index)
@@ -281,9 +284,8 @@ void QVCA::getStateInformation (MemoryBlock& destData)
 	// You could do that either as raw data, or use the XML or ValueTree classes
 	// as intermediaries to make it easy to save and load complex data.
 
-	// the ssp's software currently does not store any info in its presets 
-	// about plugins, only the plugin file and program number 
-	// this means that this function won't be called. 
+	// The SSP software will call this function to capture the state of your plugin
+	// and will store the state inside its preset files when saved. 
 }
 
 void QVCA::setStateInformation (const void* data, int sizeInBytes)
@@ -291,14 +293,8 @@ void QVCA::setStateInformation (const void* data, int sizeInBytes)
 	// You should use this method to restore your parameters from this memory block,
 	// whose contents will have been created by the getStateInformation() call.
 
-	// the ssp's software currently does not store any info in its presets 
-	// about plugins, only the plugin file and program number 
-	// this means that this function won't be called. 
-
-	// this means you have to provide your own way of storing your VST plugin 
-	// presets as files and recalling them. The SSP's software will call get/set 
-	// program and related above functions to let the user choose programs in the 
-	// VST module UI. 
+	// The SSP software will call this function after reading the state from a preset
+	// file, when the user loads a new preset. 
 }
 
 // This creates new instances of the plugin..

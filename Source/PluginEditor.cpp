@@ -10,7 +10,7 @@ QVCAEditor::QVCAEditor (QVCA& p)
 	// set this to true to see the parameter values update 
 	// in the vst plugin GUI (editor) when turning encoders/
 	// pushing buttons 
-	showParamValues = false; 
+	showParamValues = true; 
 
 	setSize (1600, 480);
 
@@ -122,11 +122,29 @@ void QVCAEditor::paint(Graphics& g)
 
 		// third row 
 		x = 10; 
-		for (int i=Percussa::sspSwLeft; i<Percussa::sspLast; i++) { 
+		for (int i=Percussa::sspSwLeft; i<Percussa::sspOutEn1; i++) { 
 			g.drawSingleLineText(
 				String::formatted("%4.2f", processor.getParameter(i)), 
 				x, getHeight()-keepout+60); 
 			x += 150;  
+		}
+
+		// fourth row 
+		x = 10; 
+		for (int i=Percussa::sspOutEn1; i<Percussa::sspInEn1; i++) { 
+			g.drawSingleLineText(
+				String::formatted("%1.1f", processor.getParameter(i)), 
+				x, getHeight()-keepout+80); 
+			x += 50;  
+		}
+
+		// fifth row 
+		x = 10; 
+		for (int i=Percussa::sspInEn1; i<Percussa::sspLast; i++) { 
+			g.drawSingleLineText(
+				String::formatted("%1.1f", processor.getParameter(i)), 
+				x, getHeight()-keepout+100); 
+			x += 50;  
 		}
 	} 
 }
