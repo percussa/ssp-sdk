@@ -11,8 +11,6 @@ QVCAEditor::QVCAEditor (QVCA& p)
 	// pushing buttons 
 	showParamValues = true; 
 
-	setSize (1600, 480);
-
 	for (int i=0; i<nScopes; i++) { 
 		Oscilloscope* o = new Oscilloscope(
 			processor.inBuffer, processor.lock, i);  
@@ -39,7 +37,10 @@ QVCAEditor::QVCAEditor (QVCA& p)
 	out[6]->setInfo(String("Out7=In7*In8")); 
 	out[7]->setInfo(String("Out8=-In7*In8")); 
 
+	setSize (1600, 480);
 	startTimer(50); 
+
+	Logger::writeToLog(String(__FUNCTION__)); 
 }
 
 QVCAEditor::~QVCAEditor()
@@ -156,6 +157,11 @@ void QVCAEditor::paint(Graphics& g)
 
 void QVCAEditor::resized()
 {
+	Logger::writeToLog(String(__FUNCTION__)+
+		String(": in.size: ")+String(in.size())); 
+	Logger::writeToLog(String(__FUNCTION__)+
+		String(": out.size: ")+String(out.size())); 
+
 	int w=getWidth(); 
 	int h=getHeight();
 
@@ -163,34 +169,30 @@ void QVCAEditor::resized()
 		h -= keepout; 
 	}
 
-	int scopeWidth=w/(nScopeCols*2); 
-	int scopeHeight=h/nScopeRows; 
+	int scopeWidth=w/nScopes; 
+	int scopeHeight=h/2; 
 
-	for (int row=0; row<nScopeRows; row++) { 
-		for (int col=0; col<nScopeCols; col++) { 
+	for (int col=0; col<in.size(); col++) { 
 
-			Oscilloscope* o = in[row*nScopeCols+col]; 
-			assert(o); 
+		Oscilloscope* o = in[col]; 
+		assert(o); 
 
-			o->setBounds(
-				col*scopeWidth*2, 
-				row*scopeHeight, 
-				scopeWidth, 
-				scopeHeight); 
-		}	
-	}
+		o->setBounds(
+			col*scopeWidth, 
+			0, 
+			scopeWidth, 
+			scopeHeight); 
+	}	
 
-	for (int row=0; row<nScopeRows; row++) { 
-		for (int col=0; col<nScopeCols; col++) { 
-		
-			Oscilloscope* o = out[row*nScopeCols+col]; 
-			assert(o); 
+	for (int col=0; col<out.size(); col++) { 
+	
+		Oscilloscope* o = out[col]; 
+		assert(o); 
 
-			o->setBounds(
-				col*scopeWidth*2+scopeWidth, 
-				row*scopeHeight, 
-				scopeWidth, 
-				scopeHeight); 
-		}	
-	}
+		o->setBounds(
+			col*scopeWidth, 
+			scopeHeight, 
+			scopeWidth, 
+			scopeHeight); 
+	}	
 }
