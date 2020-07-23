@@ -251,6 +251,13 @@ void QVCA::prepareToPlay (double sampleRate, int samplesPerBlock)
 	// initialisation that you need..
 	// this is called by the SSP's software right after loading 
 	// the plugin and before it starts calling processBlock below  
+
+	const ScopedLock sl(lock); 
+
+	// allocate space in the input/output buffers for visualisation
+	// here, to make sure processBlock() does not do any allocations. 
+	inBuffer.setSize(getNumInputChannels(), samplesPerBlock); 
+	outBuffer.setSize(getNumOutputChannels(), samplesPerBlock); 
 }
 
 void QVCA::releaseResources()
@@ -270,9 +277,14 @@ void QVCA::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 	// if you don't want to do audio rate modulation you'd process the 
 	// changes at a lower control rate. 	
 
-	// copy input buffer before altering it 
-	AudioSampleBuffer ib = buffer; 
+	// try to get lock and copy input buffer  
+	if (lock.tryEnter()) {  
+		for (int ch=0; ch<getNumInputChannels(); ch++) 
+			inBuffer.copyFrom(ch, 0, buffer, ch, 0, buffer.getNumSamples()); 
+		lock.exit(); 
+	}
 
+	// process signals 
 	for (int i=0; i<buffer.getNumSamples(); i++) { 
 
 		// multiply side by side channels 	
@@ -290,15 +302,14 @@ void QVCA::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 		buffer.setSample(5, i, -out3); 
 		buffer.setSample(6, i,  out4); 
 		buffer.setSample(7, i, -out4); 
-	
 	}
 
-	// try to get lock and copy input and output buffers  
-	bool haveLock = lock.tryEnter(); 
-	if (!haveLock) return; 
-		inBuffer = ib; 
-		outBuffer = buffer;
-	lock.exit(); 
+	// try to get lock and copy output buffer  
+	if (lock.tryEnter()) { 
+		for (int ch=0; ch<getNumOutputChannels(); ch++) 
+			outBuffer.copyFrom(ch, 0, buffer, ch, 0, buffer.getNumSamples()); 
+		lock.exit();
+	} 
 }
 
 bool QVCA::hasEditor() const
