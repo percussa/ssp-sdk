@@ -1,4 +1,3 @@
-
 // see header file for license 
 
 #include "PluginProcessor.h"
@@ -10,37 +9,42 @@ QVCAEditor::QVCAEditor (QVCA& p)
 	// set this to true to see the parameter values update 
 	// in the vst plugin GUI (editor) when turning encoders/
 	// pushing buttons 
-	showParamValues = false; 
+	showParamValues = true; 
 
 	setSize (1600, 480);
 
 	for (int i=0; i<nScopes; i++) { 
-		addAndMakeVisible(in[i]); 
-		in[i].setInfo(String("In")+String(i+1)); 
-		in[i].setInfoCol(Colours::white); 
-		in[i].start(inBuffer, inLock, i);  
+		Oscilloscope* o = new Oscilloscope(
+			processor.inBuffer, processor.lock, i);  
+		o->setInfo(String("In")+String(i+1)); 
+		o->setInfoCol(Colours::white); 
+		addAndMakeVisible(o); 
+		in.add(o); 
 	}
 
 	for (int i=0; i<nScopes; i++) { 
-		addAndMakeVisible(out[i]); 
-		out[i].setInfoCol(Colours::red); 
-		out[i].start(outBuffer, outLock, i); 
+		Oscilloscope* o = new Oscilloscope(
+			processor.outBuffer, processor.lock, i); 
+		o->setInfoCol(Colours::red); 
+		addAndMakeVisible(o); 
+		out.add(o); 
 	}
 
-	out[0].setInfo(String("Out1=In1*In2")); 
-	out[1].setInfo(String("Out2=-In1*In2")); 
-	out[2].setInfo(String("Out3=In3*In4")); 
-	out[3].setInfo(String("Out4=-In3*In4")); 
-	out[4].setInfo(String("Out5=In5*In6")); 
-	out[5].setInfo(String("Out6=-In5*In6")); 
-	out[6].setInfo(String("Out7=In7*In8")); 
-	out[7].setInfo(String("Out8=-In7*In8")); 
+	out[0]->setInfo(String("Out1=In1*In2")); 
+	out[1]->setInfo(String("Out2=-In1*In2")); 
+	out[2]->setInfo(String("Out3=In3*In4")); 
+	out[3]->setInfo(String("Out4=-In3*In4")); 
+	out[4]->setInfo(String("Out5=In5*In6")); 
+	out[5]->setInfo(String("Out6=-In5*In6")); 
+	out[6]->setInfo(String("Out7=In7*In8")); 
+	out[7]->setInfo(String("Out8=-In7*In8")); 
 
 	startTimer(50); 
 }
 
 QVCAEditor::~QVCAEditor()
 {
+/*
 	stopTimer(); 
 
 	inLock.enter(); 
@@ -54,16 +58,17 @@ QVCAEditor::~QVCAEditor()
 		out[i].reset(); 
 	}
 	outLock.exit(); 
+*/
 }
 
 void QVCAEditor::timerCallback() 
 { 
 	for (int i=0; i<nScopes; i++) { 
-		in[i].repaint(); 
+		in[i]->repaint(); 
 	}
 
 	for (int i=0; i<nScopes; i++) { 
-		out[i].repaint(); 
+		out[i]->repaint(); 
 	}
 
 	// repaint our own canvas as well 
@@ -149,20 +154,6 @@ void QVCAEditor::paint(Graphics& g)
 	} 
 }
 
-void QVCAEditor::updateInputScopes(AudioSampleBuffer& asb) {  
-	bool haveLock = inLock.tryEnter(); 
-	if (!haveLock) return; 
-	inBuffer = asb; 
-	inLock.exit(); 
-}
-
-void QVCAEditor::updateOutputScopes(AudioSampleBuffer& asb) {  
-	bool haveLock = outLock.tryEnter(); 
-	if (!haveLock) return; 
-	outBuffer = asb; 
-	outLock.exit(); 
-}
-	
 void QVCAEditor::resized()
 {
 	int w=getWidth(); 
@@ -175,9 +166,13 @@ void QVCAEditor::resized()
 	int scopeWidth=w/(nScopeCols*2); 
 	int scopeHeight=h/nScopeRows; 
 
-	for (int col=0; col<nScopeCols; col++) { 
-		for (int row=0; row<nScopeRows; row++) { 
-			in[col*nScopeRows+row].setBounds(
+	for (int row=0; row<nScopeRows; row++) { 
+		for (int col=0; col<nScopeCols; col++) { 
+
+			Oscilloscope* o = in[row*nScopeCols+col]; 
+			assert(o); 
+
+			o->setBounds(
 				col*scopeWidth*2, 
 				row*scopeHeight, 
 				scopeWidth, 
@@ -185,9 +180,13 @@ void QVCAEditor::resized()
 		}	
 	}
 
-	for (int col=0; col<nScopeCols; col++) { 
-		for (int row=0; row<nScopeRows; row++) { 
-			out[col*nScopeRows+row].setBounds(
+	for (int row=0; row<nScopeRows; row++) { 
+		for (int col=0; col<nScopeCols; col++) { 
+		
+			Oscilloscope* o = out[row*nScopeCols+col]; 
+			assert(o); 
+
+			o->setBounds(
 				col*scopeWidth*2+scopeWidth, 
 				row*scopeHeight, 
 				scopeWidth, 

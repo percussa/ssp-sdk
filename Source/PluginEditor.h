@@ -36,23 +36,14 @@ public:
 
 	void paint (Graphics&) override;
 	void resized() override;
-
 	void timerCallback(); 
-	void updateInputScopes(AudioSampleBuffer& asb); 
-	void updateOutputScopes(AudioSampleBuffer& asb); 
 
 private:
 	QVCA& processor;
 	bool showParamValues; 
 
-	Oscilloscope in[nScopes]; 
-	Oscilloscope out[nScopes]; 
-
-	CriticalSection inLock; 
-	AudioSampleBuffer inBuffer; 
-
-	CriticalSection outLock; 
-	AudioSampleBuffer outBuffer; 
+	OwnedArray<Oscilloscope> in; 
+	OwnedArray<Oscilloscope> out; 
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (QVCAEditor)
 };

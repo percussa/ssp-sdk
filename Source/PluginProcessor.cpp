@@ -270,9 +270,8 @@ void QVCA::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 	// if you don't want to do audio rate modulation you'd process the 
 	// changes at a lower control rate. 	
 
-	if (QVCAEditor* editor = (QVCAEditor*)getActiveEditor()) { 
-		editor->updateInputScopes(buffer); 
-	} 
+	// copy input buffer before altering it 
+	AudioSampleBuffer ib = buffer; 
 
 	for (int i=0; i<buffer.getNumSamples(); i++) { 
 
@@ -294,9 +293,12 @@ void QVCA::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 	
 	}
 
-	if (QVCAEditor* editor = (QVCAEditor*)getActiveEditor()) { 
-		editor->updateOutputScopes(buffer); 
-	} 
+	// try to get lock and copy input and output buffers  
+	bool haveLock = lock.tryEnter(); 
+	if (!haveLock) return; 
+		inBuffer = ib; 
+		outBuffer = buffer;
+	lock.exit(); 
 }
 
 bool QVCA::hasEditor() const

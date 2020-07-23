@@ -6,8 +6,7 @@
 
 void Oscilloscope::paint(Graphics &g)
 {
-	if (!_lock) return; 
-	_lock->enter(); 
+	_lock.enter(); 
 
 	float val=0.00f;
 	float w=(float)getWidth();
@@ -19,17 +18,16 @@ void Oscilloscope::paint(Graphics &g)
 	g.setFont(f);
 	g.setColour(Colours::red);
 
-	if (!_asb) return; 
 	if (_channel < 0) return; 
-	if (_channel >= _asb->getNumChannels()) return; 
+	if (_channel >= _asb.getNumChannels()) return; 
 
-	float step=_asb->getNumSamples()/w; 
+	float step=_asb.getNumSamples()/w; 
 	float phase=0.00f;
 
 	// draw waveform samples as pixels/short lines
 	for (int i=0; i<(int)w; i++) {
 
-		val = _asb->getSample(_channel, (int)phase) * 0.75f;
+		val = _asb.getSample(_channel, (int)phase) * 0.75f;
 
 		if (val != val) val = 0.00f; 
 		if (val < -1.00f) val = -1.00f; 
@@ -58,6 +56,6 @@ void Oscilloscope::paint(Graphics &g)
 		w,
 		h); 
 
-	_lock->exit(); 
+	_lock.exit(); 
 }
 
