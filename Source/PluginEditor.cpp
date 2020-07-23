@@ -9,7 +9,7 @@ QVCAEditor::QVCAEditor (QVCA& p)
 	// set this to true to see the parameter values update 
 	// in the vst plugin GUI (editor) when turning encoders/
 	// pushing buttons 
-	showParamValues = true; 
+	showParamValues = false; 
 
 	for (int i=0; i<nScopes; i++) { 
 		Oscilloscope* o = new Oscilloscope(
