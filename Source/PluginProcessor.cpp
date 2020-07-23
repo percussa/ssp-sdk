@@ -256,8 +256,9 @@ void QVCA::prepareToPlay (double sampleRate, int samplesPerBlock)
 
 	// allocate space in the input/output buffers for visualisation
 	// here, to make sure processBlock() does not do any allocations. 
-	inBuffer.setSize(getNumInputChannels(), samplesPerBlock); 
-	outBuffer.setSize(getNumOutputChannels(), samplesPerBlock); 
+	// make sure buffers are cleared at the same time (clearExtraSpace) 
+	inBuffer.setSize(getNumInputChannels(), samplesPerBlock, false, true, false); 
+	outBuffer.setSize(getNumOutputChannels(), samplesPerBlock, false, true, false); 
 }
 
 void QVCA::releaseResources()
