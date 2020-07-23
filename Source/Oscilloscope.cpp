@@ -1,4 +1,3 @@
-
 // see header file for license 
 
 #include <assert.h> 
@@ -6,7 +5,7 @@
 
 void Oscilloscope::paint(Graphics &g)
 {
-	_lock.enter(); 
+	const ScopedLock sl(_lock); 
 
 	float val=0.00f;
 	float w=(float)getWidth();
@@ -18,11 +17,23 @@ void Oscilloscope::paint(Graphics &g)
 	g.setFont(f);
 	g.setColour(Colours::red);
 
+	// draw border 
+	g.setColour(Colours::grey); 
+	g.drawRect(0.0f,
+		0.0f,
+		w,
+		h); 
+
+	if (_showInfo) { 
+		g.setColour(_infoCol); 
+		g.drawMultiLineText(_info, 10, h-30, w); 
+	}
+
 	if (_channel < 0) return; 
 	if (_channel >= _asb.getNumChannels()) return; 
 
-	float step=_asb.getNumSamples()/w; 
-	float phase=0.00f;
+	float step = _asb.getNumSamples()/w; 
+	float phase = 0.00f;
 
 	// draw waveform samples as pixels/short lines
 	for (int i=0; i<(int)w; i++) {
@@ -43,19 +54,5 @@ void Oscilloscope::paint(Graphics &g)
 
 		phase += step; 
 	}
-
-	if (_showInfo) { 
-		g.setColour(_infoCol); 
-		g.drawMultiLineText(_info, 10, h-30, w); 
-	}
-
-	// draw border 
-	g.setColour(Colours::grey); 
-	g.drawRect(0.0f,
-		0.0f,
-		w,
-		h); 
-
-	_lock.exit(); 
 }
 

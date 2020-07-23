@@ -26,8 +26,8 @@
 class QVCAEditor  : public AudioProcessorEditor, public Timer 
 {
 public:
-	static const int nScopes=8; 
-	static const int keepout=100; 
+	static const int nScopes = 8; 
+	static const int keepout = 100; 
 
 	QVCAEditor (QVCA&);
 	~QVCAEditor();

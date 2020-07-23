@@ -24,14 +24,14 @@
 class Oscilloscope: public Component
 {
 private: 
-	AudioSampleBuffer& _asb; 
+	const AudioSampleBuffer& _asb; 
 	CriticalSection& _lock; 
 	int _channel; 
 	bool _showInfo; 
 	String _info; 
 	Colour _infoCol; 
 public:
-	Oscilloscope(AudioSampleBuffer& asb, CriticalSection& lock, int ch): 
+	Oscilloscope(const AudioSampleBuffer& asb, CriticalSection& lock, int ch): 
 		_asb(asb), _lock(lock), _channel(ch) 
 	{ 
 		_showInfo = true; 

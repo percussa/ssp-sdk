@@ -39,27 +39,10 @@ QVCAEditor::QVCAEditor (QVCA& p)
 
 	setSize (1600, 480);
 	startTimer(50); 
-
-	Logger::writeToLog(String(__FUNCTION__)); 
 }
 
 QVCAEditor::~QVCAEditor()
 {
-/*
-	stopTimer(); 
-
-	inLock.enter(); 
-	for (int i=0; i<nScopes; i++) { 
-		in[i].reset(); 
-	}
-	inLock.exit(); 
-
-	outLock.enter(); 
-	for (int i=0; i<nScopes; i++) { 
-		out[i].reset(); 
-	}
-	outLock.exit(); 
-*/
 }
 
 void QVCAEditor::timerCallback() 
@@ -157,11 +140,6 @@ void QVCAEditor::paint(Graphics& g)
 
 void QVCAEditor::resized()
 {
-	Logger::writeToLog(String(__FUNCTION__)+
-		String(": in.size: ")+String(in.size())); 
-	Logger::writeToLog(String(__FUNCTION__)+
-		String(": out.size: ")+String(out.size())); 
-
 	int w=getWidth(); 
 	int h=getHeight();
 
