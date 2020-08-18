@@ -7,7 +7,11 @@
 #include "PluginEditor.h"
 #include "Percussa.h" 
 
-QVCA::QVCA()
+QVCA::QVCA(): chnames({
+	"a", "b", "c", "d", "e", "f", "g", "h", 
+	"i", "j", "k", "l", "m", "n", "o", "p", 
+	"q", "r", "s", "t", "u", "v", "w", "x", 
+}) 
 {
 	std::memset(paramValues, 0, sizeof(paramValues)); 
 }
@@ -166,12 +170,12 @@ const String QVCA::getParameterText (int index)
 
 const String QVCA::getInputChannelName (int channelIndex) const
 {
-    return String (channelIndex + 1);
+    return chnames[channelIndex]; 
 }
 
 const String QVCA::getOutputChannelName (int channelIndex) const
 {
-    return String (channelIndex + 1);
+    return chnames[channelIndex]; 
 }
 
 bool QVCA::isInputChannelStereoPair (int index) const

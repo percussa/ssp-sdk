@@ -72,6 +72,7 @@ public:
 	CriticalSection lock;
 	AudioSampleBuffer inBuffer; 
 	AudioSampleBuffer outBuffer; 
+	std::vector<String> chnames; 
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (QVCA)
 };
