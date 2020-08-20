@@ -35,7 +35,6 @@
 #define JUCE_MODULE_AVAILABLE_juce_gui_basics               1
 #define JUCE_MODULE_AVAILABLE_juce_gui_extra                1
 #define JUCE_MODULE_AVAILABLE_juce_opengl                   1
-#define JUCE_MODULE_AVAILABLE_juce_video                    1
 
 //==============================================================================
 // juce_audio_devices flags:
@@ -178,25 +177,6 @@
  //#define JUCE_ENABLE_LIVE_CONSTANT_EDITOR
 #endif
 
-//==============================================================================
-// juce_video flags:
-
-#ifndef    JUCE_DIRECTSHOW
- //#define JUCE_DIRECTSHOW
-#endif
-
-#ifndef    JUCE_MEDIAFOUNDATION
- //#define JUCE_MEDIAFOUNDATION
-#endif
-
-#ifndef    JUCE_QUICKTIME
- #define   JUCE_QUICKTIME 0
-#endif
-
-#ifndef    JUCE_USE_CAMERA
- //#define JUCE_USE_CAMERA
-#endif
-
 
 //==============================================================================
 // Audio plugin settings..
@@ -208,7 +188,7 @@
  #define JucePlugin_Build_VST3             1
 #endif
 #ifndef  JucePlugin_Build_AU
- #define JucePlugin_Build_AU               1
+ #define JucePlugin_Build_AU               0
 #endif
 #ifndef  JucePlugin_Build_RTAS
  #define JucePlugin_Build_RTAS             0
@@ -235,7 +215,7 @@
  #define JucePlugin_ManufacturerCode       'Perc'
 #endif
 #ifndef  JucePlugin_PluginCode
- #define JucePlugin_PluginCode             'Pvca'
+ #define JucePlugin_PluginCode             'QVCA'
 #endif
 #ifndef  JucePlugin_MaxNumInputChannels
  #define JucePlugin_MaxNumInputChannels    8

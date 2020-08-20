@@ -2,9 +2,9 @@
 
 <JUCERPROJECT id="LFrQVa" name="qvca" projectType="audioplug" version="1.0.0"
               bundleIdentifier="com.percussa.qvca" includeBinaryInAppConfig="1"
-              buildVST="1" buildVST3="1" buildAU="1" buildRTAS="0" buildAAX="0"
+              buildVST="1" buildVST3="1" buildAU="0" buildRTAS="0" buildAAX="0"
               pluginName="qvca" pluginDesc="qvca" pluginManufacturer="percussa"
-              pluginManufacturerCode="Perc" pluginCode="Pvca" pluginChannelConfigs="{8, 8}"
+              pluginManufacturerCode="Perc" pluginCode="QVCA" pluginChannelConfigs="{8, 8}"
               pluginIsSynth="0" pluginWantsMidiIn="0" pluginProducesMidiOut="0"
               pluginSilenceInIsSilenceOut="0" pluginEditorRequiresKeys="0"
               pluginAUExportPrefix="qvcaAU" pluginRTASCategory="" aaxIdentifier="com.percussa.qvca"
@@ -42,7 +42,6 @@
         <MODULEPATH id="juce_gui_basics" path="../../juce/modules"/>
         <MODULEPATH id="juce_gui_extra" path="../../juce/modules"/>
         <MODULEPATH id="juce_cryptography" path="../../juce/modules"/>
-        <MODULEPATH id="juce_video" path="../../juce/modules"/>
         <MODULEPATH id="juce_opengl" path="../../juce/modules"/>
         <MODULEPATH id="juce_audio_basics" path="../../juce/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../../juce/modules"/>
@@ -67,7 +66,6 @@
         <MODULEPATH id="juce_gui_basics" path="../../juce/modules"/>
         <MODULEPATH id="juce_gui_extra" path="../../juce/modules"/>
         <MODULEPATH id="juce_cryptography" path="../../juce/modules"/>
-        <MODULEPATH id="juce_video" path="../../juce/modules"/>
         <MODULEPATH id="juce_opengl" path="../../juce/modules"/>
         <MODULEPATH id="juce_audio_basics" path="../../juce/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../../juce/modules"/>
@@ -91,7 +89,6 @@
         <MODULEPATH id="juce_gui_basics" path="../../juce/modules"/>
         <MODULEPATH id="juce_gui_extra" path="../../juce/modules"/>
         <MODULEPATH id="juce_cryptography" path="../../juce/modules"/>
-        <MODULEPATH id="juce_video" path="../../juce/modules"/>
         <MODULEPATH id="juce_opengl" path="../../juce/modules"/>
         <MODULEPATH id="juce_audio_basics" path="../../juce/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../../juce/modules"/>
@@ -115,7 +112,6 @@
     <MODULES id="juce_gui_basics" showAllCode="1" useLocalCopy="0"/>
     <MODULES id="juce_gui_extra" showAllCode="1" useLocalCopy="0"/>
     <MODULES id="juce_opengl" showAllCode="1" useLocalCopy="0"/>
-    <MODULES id="juce_video" showAllCode="1" useLocalCopy="0"/>
   </MODULES>
   <JUCEOPTIONS JUCE_QUICKTIME="disabled"/>
 </JUCERPROJECT>

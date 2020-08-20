@@ -67,7 +67,6 @@ OBJECTS := \
   $(OBJDIR)/juce_gui_extra_f56667fa.o \
   $(OBJDIR)/juce_opengl_735c73e.o \
   $(OBJDIR)/juce_PluginUtilities_79f5d586.o \
-  $(OBJDIR)/juce_video_7109251a.o \
   $(OBJDIR)/juce_VST_Wrapper_8a88968f.o \
   $(OBJDIR)/juce_VST3_Wrapper_1457680d.o \
 
@@ -166,11 +165,6 @@ $(OBJDIR)/juce_opengl_735c73e.o: ../../../../juce/modules/juce_opengl/juce_openg
 $(OBJDIR)/juce_PluginUtilities_79f5d586.o: ../../../../juce/modules/juce_audio_plugin_client/utility/juce_PluginUtilities.cpp
 	-@mkdir -p $(OBJDIR)
 	@echo "Compiling juce_PluginUtilities.cpp"
-	@$(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-
-$(OBJDIR)/juce_video_7109251a.o: ../../../../juce/modules/juce_video/juce_video.cpp
-	-@mkdir -p $(OBJDIR)
-	@echo "Compiling juce_video.cpp"
 	@$(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 
 $(OBJDIR)/juce_VST_Wrapper_8a88968f.o: ../../../../juce/modules/juce_audio_plugin_client/VST/juce_VST_Wrapper.cpp
