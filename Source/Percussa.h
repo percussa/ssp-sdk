@@ -42,13 +42,15 @@ namespace Percussa {
 		sspEnc3,
 		sspEnc4, 
 
-		// encoder push buttons: parameter value 0 or 1 
+		// encoder push buttons: values centered around 0.5, with values smaller 
+		// indicating the encoder was released, and values larger indicating 
+		// the encoder was pushed. the same applies for the button groups below.  
 		sspEncSw1, 
 		sspEncSw2, 
 		sspEncSw3, 
 		sspEncSw4, 
 
-		// soft key group (8 buttons): parameter value 0 or 1 
+		// soft key group (8 buttons)
 		sspSw1, 
 		sspSw2, 
 		sspSw3, 
@@ -58,7 +60,7 @@ namespace Percussa {
 		sspSw7, 
 		sspSw8, 
 
-		// cursor keys + shift L/R: parameter value 0 or 1 
+		// cursor keys + shift L/R
 		sspSwLeft, 
 		sspSwRight, 
 		sspSwUp, 
@@ -66,7 +68,9 @@ namespace Percussa {
 		sspSwShiftL,
 		sspSwShiftR, 
 
-		// VST module host output connected flag: parameter value 0 or 1 
+		// VST module output enabled flag: values larger than 0.5 indicate
+		// the output is enabled, values smaller means output is disabled. 
+		// same applies for input enabled flag below.  
 		sspOutEn1, 
 		sspOutEn2, 
 		sspOutEn3, 
@@ -92,7 +96,7 @@ namespace Percussa {
 		sspOutEn23, 
 		sspOutEn24, 
 
-		// VST module host input connected flag: parameter value 0 or 1 
+		// VST module input enabled flag
 		sspInEn1, 
 		sspInEn2, 
 		sspInEn3, 
