@@ -213,7 +213,7 @@
  #define JucePlugin_ManufacturerCode       'Perc'
 #endif
 #ifndef  JucePlugin_PluginCode
- #define JucePlugin_PluginCode             'Pvca'
+ #define JucePlugin_PluginCode             'QVCA'
 #endif
 #ifndef  JucePlugin_MaxNumInputChannels
  #define JucePlugin_MaxNumInputChannels    8

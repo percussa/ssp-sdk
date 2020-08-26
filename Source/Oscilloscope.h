@@ -23,32 +23,20 @@
 
 class Oscilloscope: public Component
 {
+private: 
+	const AudioSampleBuffer& _asb; 
+	CriticalSection& _lock; 
+	int _channel; 
+	bool _showInfo; 
+	String _info; 
+	Colour _infoCol; 
 public:
-	Oscilloscope()   
-	{
-		reset(); 
-	}
-
-	~Oscilloscope()
-	{
-	}
-
-	void reset() { 
-		_lock = 0;
-		_asb = 0; 
-		_channel = 0; 
+	Oscilloscope(const AudioSampleBuffer& asb, CriticalSection& lock, int ch): 
+		_asb(asb), _lock(lock), _channel(ch) 
+	{ 
 		_showInfo = true; 
 		_info = String("Info"); 
 		_infoCol = Colours::grey; 
-	}
-
-	void start(AudioSampleBuffer& asb, 
-		CriticalSection& lock, 
-		int ch) { 
-
-		_asb = &asb; 
-		_lock = &lock; 
-		_channel = ch; 
 	}
 
 	void setInfo(const String& info) { 
@@ -69,13 +57,5 @@ public:
 private:
 	void paint(Graphics &g);
 	juce_UseDebuggingNewOperator
-
-private: 
-	CriticalSection* _lock; 
-	AudioSampleBuffer* _asb; 
-	int _channel; 
-	bool _showInfo; 
-	String _info; 
-	Colour _infoCol; 
 };
 
