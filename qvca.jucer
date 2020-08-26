@@ -4,7 +4,7 @@
               bundleIdentifier="com.percussa.qvca" includeBinaryInAppConfig="1"
               buildVST="1" buildVST3="1" buildAU="0" buildRTAS="0" buildAAX="0"
               pluginName="qvca" pluginDesc="qvca" pluginManufacturer="percussa"
-              pluginManufacturerCode="Perc" pluginCode="Pvca" pluginChannelConfigs="{8, 8}"
+              pluginManufacturerCode="Perc" pluginCode="QVCA" pluginChannelConfigs="{8, 8}"
               pluginIsSynth="0" pluginWantsMidiIn="0" pluginProducesMidiOut="0"
               pluginSilenceInIsSilenceOut="0" pluginEditorRequiresKeys="0"
               pluginAUExportPrefix="qvcaAU" pluginRTASCategory="" aaxIdentifier="com.percussa.qvca"
@@ -26,8 +26,7 @@
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
-    <LINUX_MAKE targetFolder="Builds/Linux" vstFolder="~/SDKs/vst3-sdk/VST3_SDK"
-                vst3Folder="~/SDKs/vst3-sdk">
+    <LINUX_MAKE targetFolder="Builds/Linux" vstFolder="~/SDKs/vstsdk2.4" vst3Folder="~/SDKs/vst3-sdk">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" libraryPath="/usr/X11R6/lib/" isDebug="1" optimisation="1"
                        targetName="qvca" binaryPath="Builds/Linux/build/Debug" linuxArchitecture=""/>
