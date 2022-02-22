@@ -1,0 +1,4 @@
+build/*
+**/*.sublime-workspace
+cmake-build*/
+.idea/*

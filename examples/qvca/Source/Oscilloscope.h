@@ -18,6 +18,7 @@
 
 #pragma once
 
+#include <mutex>
 #include <assert.h>
 #include "../JuceLibraryCode/JuceHeader.h"
 

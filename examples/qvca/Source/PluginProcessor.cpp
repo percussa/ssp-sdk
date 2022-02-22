@@ -6,20 +6,31 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
-#include "Percussa.h" 
+#include "Percussa.h"
 
-const std::vector<std::string> QVCA::inputNames = { 
-	"In1",  "In2",  "In3",  "In4",  "In5",  "In6",  "In7",  "In8" };
-const std::vector<std::string> QVCA::outputNames = { 
-	"Out1", "Out2", "Out3", "Out4", "Out5", "Out6", "Out7", "Out8" };
+const std::vector<std::string> QVCA::inputNames = {
+    "In1",  "In2",  "In3",  "In4",  "In5",  "In6",  "In7",  "In8" };
+const std::vector<std::string> QVCA::outputNames = {
+    "Out1", "Out2", "Out3", "Out4", "Out5", "Out6", "Out7", "Out8" };
 
-QVCA::QVCA() 
-{
+QVCA::QVCA() : AudioProcessor(getBusesProperties()) {
 }
 
-QVCA::~QVCA()
-{
+QVCA::~QVCA() {
 }
+
+const String QVCA::getInputBusName(int channelIndex) {
+    if (channelIndex < I_MAX) { return inputNames[channelIndex]; }
+    return "ZZIn-" + String(channelIndex);
+}
+
+
+const String QVCA::getOutputBusName(int channelIndex) {
+    if (channelIndex < O_MAX) { return outputNames[channelIndex]; }
+    return "ZZOut-" + String(channelIndex);
+}
+
+
 
 const String QVCA::getName() const
 {
@@ -52,12 +63,12 @@ const String QVCA::getParameterText (int index)
 
 const String QVCA::getInputChannelName (int channelIndex) const
 {
-    return inputNames[channelIndex]; 
+    return getInputBusName(channelIndex);
 }
 
 const String QVCA::getOutputChannelName (int channelIndex) const
 {
-    return outputNames[channelIndex]; 
+    return getOutputBusName(channelIndex);
 }
 
 bool QVCA::isInputChannelStereoPair (int index) const
@@ -137,8 +148,8 @@ void QVCA::prepareToPlay (double sampleRate, int samplesPerBlock)
 	// allocate space in the input/output buffers for visualisation here, to make sure 
 	// processBlock() does not do any allocations. make sure buffers are cleared at 
 	// the same time (clearExtraSpace) 
-	inBuffer.setSize(getNumInputChannels(), samplesPerBlock, false, true, false); 
-	outBuffer.setSize(getNumOutputChannels(), samplesPerBlock, false, true, false); 
+	inBuffer.setSize(I_MAX, samplesPerBlock, false, true, false);
+	outBuffer.setSize(O_MAX, samplesPerBlock, false, true, false);
 
 	prepared = true; 
 }
@@ -157,13 +168,13 @@ void QVCA::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 	// if you don't want to do audio rate modulation you'd process the changes at a lower 
 	// control rate. 	
 
-	assert(prepared); 
-	assert(inBuffer.getNumChannels() == inputNames.size()); 
-	assert(outBuffer.getNumChannels() == outputNames.size()); 
+	assert(prepared);
+//	assert(inBuffer.getNumChannels() == inputNames.size());
+//	assert(outBuffer.getNumChannels() == outputNames.size());
 
 	// try to get lock and copy input buffer  
 	if (lock.tryEnter()) {  
-		for (int ch=0; ch<getNumInputChannels(); ch++) 
+		for (int ch=0; ch<I_MAX; ch++)
 			inBuffer.copyFrom(ch, 0, buffer, ch, 0, buffer.getNumSamples()); 
 		lock.exit(); 
 	}
@@ -190,10 +201,11 @@ void QVCA::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 
 	// try to get lock and copy output buffer  
 	if (lock.tryEnter()) { 
-		for (int ch=0; ch<getNumOutputChannels(); ch++) 
+		for (int ch=0; ch<O_MAX; ch++)
 			outBuffer.copyFrom(ch, 0, buffer, ch, 0, buffer.getNumSamples()); 
 		lock.exit();
-	} 
+	}
+
 }
 
 bool QVCA::hasEditor() const
@@ -245,6 +257,7 @@ Percussa::SSP::PluginEditorInterface* QVCA::getEditor() {
 }
 
 // called by the SSP plugin hosting code to create/get a descriptor for the plugin. 
+extern "C" __attribute__ ((visibility("default")))
 Percussa::SSP::PluginDescriptor* createDescriptor() {
 
 	// descriptor is deallocated by caller. 
@@ -254,7 +267,7 @@ Percussa::SSP::PluginDescriptor* createDescriptor() {
 	desc->name = JucePlugin_Name;
 	desc->descriptiveName = JucePlugin_Desc;
 	desc->manufacturerName = JucePlugin_Manufacturer;
-        desc->version = JucePlugin_VersionString;
+    desc->version = JucePlugin_VersionString;
 	desc->uid = (int)JucePlugin_VSTUniqueID;
 	desc->inputChannelNames = QVCA::inputNames;
 	desc->outputChannelNames = QVCA::outputNames;  
@@ -263,7 +276,8 @@ Percussa::SSP::PluginDescriptor* createDescriptor() {
 }
 
 // called by the SSP plugin hosting code to create/get an instance of the plugin. 
-Percussa::SSP::PluginInterface* createInstance() { 
+extern "C" __attribute__ ((visibility("default")))
+Percussa::SSP::PluginInterface* createInstance() {
 
 	// instance is deallocated by caller. 
 	return new QVCA(); 

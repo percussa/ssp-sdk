@@ -37,12 +37,12 @@ public:
 
 	void paint (Graphics&) override;
 	void resized() override;
-	void timerCallback(); 
+	void timerCallback() override; 
 
 	//////////////////////////////////////////////////////////////////////
 	// SSP specific plugin editor interface overrides (see Percussa.h) 
 
-	void renderToImage(unsigned char* buffer, int width, int height) {
+	void renderToImage(unsigned char* buffer, int width, int height) override {
 	
 		// if we don't have an image yet, allocate one, and set the 
 		// bounds and visibility for the editor component. 

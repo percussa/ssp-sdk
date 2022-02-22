@@ -67,13 +67,16 @@ public:
 	void getStateInformation (MemoryBlock& destData) override;
 	void setStateInformation (const void* data, int sizeInBytes) override;
 
-	//////////////////////////////////////////////////////////////////////
+    static const String getInputBusName(int channelIndex);
+    static const String getOutputBusName(int channelIndex);
+
+    //////////////////////////////////////////////////////////////////////
 	// SSP specific plugin interface overrides (see Percussa.h) 
 
 	Percussa::SSP::PluginEditorInterface* editorInterface = nullptr;
-	Percussa::SSP::PluginEditorInterface* getEditor();
+	Percussa::SSP::PluginEditorInterface* getEditor() override ; 
 
-	void getState(void** buffer, size_t* size) {
+	void getState(void** buffer, size_t* size) override {
 
 		// before returning, write a pointer to state data, 
 		// and state data size into *buffer and *size respectively. 
@@ -91,31 +94,44 @@ public:
 		*size = stateInfo->getSize(); 
 	} 
 
-	void setState(void* buffer, size_t size) {
+	void setState(void* buffer, size_t size) override {
 		setStateInformation(buffer, size); 	
 	} 
 
-	void prepare(double sampleRate, int estimatedSamplesPerBlock) {
-
-		// necessary for AudioProcessor internals, this function is 
+	void prepare(double sampleRate, int estimatedSamplesPerBlock) override {
+		// necessary for AudioProcessor internals, this function is
 		// called before prepareToPlay is called, by the juce 
 		// VST wrapper code.  
 		setPlayConfigDetails(
-			JucePlugin_MaxNumInputChannels,
-			JucePlugin_MaxNumOutputChannels, 
+            I_MAX,
+			O_MAX,
 			sampleRate, 
 			estimatedSamplesPerBlock); 
 
-		prepareToPlay (sampleRate, estimatedSamplesPerBlock); 
-	} 
+		prepareToPlay (sampleRate, estimatedSamplesPerBlock);
+	}
 
-	void process(float** channelData, int numChannels, int numSamples) {
+	void process(float** channelData, int numChannels, int numSamples) override {
 		MidiBuffer midiBuffer; 		
 		AudioSampleBuffer buffer(channelData, numChannels, numSamples); 
 		processBlock(buffer, midiBuffer); 
-	} 
+	}
+
+    static BusesProperties getBusesProperties() {
+        BusesProperties props;
+        for (auto i = 0; i < I_MAX; i++) {
+            props.addBus(true, getInputBusName(i), AudioChannelSet::mono());
+        }
+        for (auto i = 0; i < O_MAX; i++) {
+            props.addBus(false, getOutputBusName(i), AudioChannelSet::mono());
+        }
+        return props;
+    }
 
 public: 
+    static constexpr unsigned I_MAX=8;
+    static constexpr unsigned O_MAX=8;
+
 	CriticalSection lock;
 	bool prepared = false; 
 	AudioSampleBuffer inBuffer; 
@@ -128,8 +144,8 @@ public:
 };
 
 extern "C" {
-	__attribute__ ((visibility("default"))) Percussa::SSP::PluginDescriptor* createDescriptor();
-	__attribute__ ((visibility("default"))) Percussa::SSP::PluginInterface* createInstance();
+	Percussa::SSP::PluginDescriptor* createDescriptor();
+	Percussa::SSP::PluginInterface* createInstance();
 }
 
 #endif 
