@@ -128,8 +128,8 @@ public:
 };
 
 extern "C" {
-	Percussa::SSP::PluginDescriptor* createDescriptor();
-	Percussa::SSP::PluginInterface* createInstance();
+	__attribute__ ((visibility("default"))) Percussa::SSP::PluginDescriptor* createDescriptor();
+	__attribute__ ((visibility("default"))) Percussa::SSP::PluginInterface* createInstance();
 }
 
 #endif 

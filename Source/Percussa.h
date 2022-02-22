@@ -179,7 +179,8 @@ namespace SSP {
 	// the functions need to have C linkage (use extern "C" {...}) so they can
 	// be found when the host loads your plugin shared object file. both functions
 	// take no arguments and return a pointer to PluginDescriptor/PluginInterface 
-	// respectively (see below for example). 
+	// respectively (see below for example). you need to make sure the functions are
+	// visible/exported, so use the necessary visibility attribute (see below).  
 	//
 	// these functions are called from the UI thread.  
 	//
@@ -187,8 +188,8 @@ namespace SSP {
 	// instance, so you should not deallocate these yourself. 
 	// 
 	// extern "C" {
-	//	Percussa::SSP::PluginDescriptor* createDescriptor();
-	//	Percussa::SSP::PluginInterface* createInstance();
+	//	__attribute__ ((visibility("default"))) Percussa::SSP::PluginDescriptor* createDescriptor();
+	//	__attribute__ ((visibility("default"))) Percussa::SSP::PluginInterface* createInstance();
 	// }
 
 	static const char* createInstanceName = "createInstance"; 
