@@ -1,5 +1,5 @@
 /*
-	Copyright (c) 2018 - Bert Schiettecatte, Noisetron LLC. 
+	Copyright (c) 2022 - Bert Schiettecatte, Noisetron LLC. 
 
 	This software is part of the Percussa SSP's software development kit (SDK). 
 	For more info about Percussa or the SSP visit http://www.percussa.com/ 
@@ -22,7 +22,10 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "Percussa.h" 
 
-class QVCA: public AudioProcessor
+#include <array>
+#include <string> 
+
+class QVCA: public AudioProcessor, public Percussa::SSP::PluginInterface  
 {
 public:
 	QVCA();
@@ -64,19 +67,70 @@ public:
 	void getStateInformation (MemoryBlock& destData) override;
 	void setStateInformation (const void* data, int sizeInBytes) override;
 
-private:
-	static const int numParams = Percussa::sspLast-Percussa::sspFirst; 
-	float paramValues[numParams]; 
+	//////////////////////////////////////////////////////////////////////
+	// SSP specific plugin interface overrides (see Percussa.h) 
+
+	Percussa::SSP::PluginEditorInterface* editorInterface = nullptr;
+	Percussa::SSP::PluginEditorInterface* getEditor();
+
+	void getState(void** buffer, size_t* size) {
+
+		// before returning, write a pointer to state data, 
+		// and state data size into *buffer and *size respectively. 
+		// the host will copy the data using this pointer and size.
+
+		// allocate new memory block. the previous one will be 
+		// deallocated (scoped ptr). 
+		stateInfo = new MemoryBlock();  
+		getStateInformation(*stateInfo); 
+
+		// pointer written into *buffer needs to remain valid after 
+		// returning from this function. this is the reason that 
+		// stateInfo is of type ScopedPointer<MemoryBlock>. 
+		*buffer = stateInfo->getData(); 
+		*size = stateInfo->getSize(); 
+	} 
+
+	void setState(void* buffer, size_t size) {
+		setStateInformation(buffer, size); 	
+	} 
+
+	void prepare(double sampleRate, int estimatedSamplesPerBlock) {
+
+		// necessary for AudioProcessor internals, this function is 
+		// called before prepareToPlay is called, by the juce 
+		// VST wrapper code.  
+		setPlayConfigDetails(
+			JucePlugin_MaxNumInputChannels,
+			JucePlugin_MaxNumOutputChannels, 
+			sampleRate, 
+			estimatedSamplesPerBlock); 
+
+		prepareToPlay (sampleRate, estimatedSamplesPerBlock); 
+	} 
+
+	void process(float** channelData, int numChannels, int numSamples) {
+		MidiBuffer midiBuffer; 		
+		AudioSampleBuffer buffer(channelData, numChannels, numSamples); 
+		processBlock(buffer, midiBuffer); 
+	} 
 
 public: 
 	CriticalSection lock;
+	bool prepared = false; 
 	AudioSampleBuffer inBuffer; 
 	AudioSampleBuffer outBuffer; 
-	std::vector<String> inputNames; 
-	std::vector<String> outputNames; 
+	static const std::vector<std::string> inputNames;
+	static const std::vector<std::string> outputNames;
+	ScopedPointer<MemoryBlock> stateInfo; 
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (QVCA)
 };
+
+extern "C" {
+	Percussa::SSP::PluginDescriptor* createDescriptor();
+	Percussa::SSP::PluginInterface* createInstance();
+}
 
 #endif 
  

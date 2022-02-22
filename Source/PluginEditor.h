@@ -1,5 +1,5 @@
 /*
-	Copyright (c) 2018 - Bert Schiettecatte, Noisetron LLC. 
+	Copyright (c) 2022 - Bert Schiettecatte, Noisetron LLC. 
 
 	This software is part of the Percussa SSP's software development kit (SDK). 
 	For more info about Percussa or the SSP visit http://www.percussa.com/ 
@@ -22,8 +22,11 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "PluginProcessor.h"
 #include "Oscilloscope.h" 
+#include "Percussa.h" 
 
-class QVCAEditor  : public AudioProcessorEditor, public Timer 
+class QVCAEditor: 
+	public AudioProcessorEditor, public Timer, 
+	public Percussa::SSP::PluginEditorInterface  
 {
 public:
 	static const int nScopes = 8; 
@@ -36,14 +39,42 @@ public:
 	void resized() override;
 	void timerCallback(); 
 
+	//////////////////////////////////////////////////////////////////////
+	// SSP specific plugin editor interface overrides (see Percussa.h) 
+
+	void renderToImage(unsigned char* buffer, int width, int height) {
+	
+		// if we don't have an image yet, allocate one, and set the 
+		// bounds and visibility for the editor component. 
+		if (!img) { 
+			// unfortunately, juce Image class cannot simply take 
+			// a pointer to a buffer, so this will allocate a new 
+			// image buffer. note that the image format used 
+			// internally is BGRA.   
+			img = new Image(Image::ARGB, width, height, false);
+			setBounds(Rectangle<int>(0, 0, width, height));  
+			setOpaque(true); 
+			setVisible(true); 
+		}
+		// draw editor component onto image. 
+		Graphics g (*img);
+		paintEntireComponent(g, true); 
+		// copy from Image internal buffer to host buffer. 
+		// if the juce Image class could take the pointer passed
+		// into renderToImage(), the above allocation and the copy 
+		// below would not be necessary. 
+		Image::BitmapData bitmap(*img, Image::BitmapData::readOnly); 
+		memcpy(buffer, bitmap.data, width*height*4); 
+	}
+
 private:
 	QVCA& processor;
-	bool showParamValues; 
-
 	OwnedArray<Oscilloscope> in; 
 	OwnedArray<Oscilloscope> out; 
+	ScopedPointer<Image> img; 
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (QVCAEditor)
 };
 
-#endif  
+#endif 
+

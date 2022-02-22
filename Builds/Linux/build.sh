@@ -1,4 +1,15 @@
 #!/bin/sh
 
-make CONFIG=$1 CC=arm-linux-gnueabihf-gcc CXX=arm-linux-gnueabihf-g++ TARGET_ARCH=-march=armv7-a -j4
+export BUILDROOT_HOME=/home/bschiett/buildroot
+export SYSROOT=$BUILDROOT_HOME/output/staging
+export PATH=$PATH:$BUILDROOT_HOME/output/host/usr/bin
+
+export CFLAGS="--sysroot=$SYSROOT -fdiagnostics-color=always"
+export CFLAGS="$CFLAGS -DJUCE_CHECK_MEMORY_LEAKS=0" 
+
+export CONFIG=$1 
+export SYNTHORVER=$2
+export TARGET_ARCH="-mcpu=cortex-a17 -mfloat-abi=hard -mfpu=neon-vfpv4" 
+
+make CC=arm-linux-gcc CXX=arm-linux-g++ -j64 
 
