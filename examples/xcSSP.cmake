@@ -18,13 +18,12 @@ else ()
     # sensible defaults
     if (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
         # assume we are using homebrew
-        set(TOOLSROOT /opt/homebrew/opt/llvm/bin/)
+        set(TOOLSROOT /opt/homebrew/opt/llvm/bin)
         # non m1 macs need this instead, but you could also set TOOLS_ROOT
-        # set(TOOLSROOT /usr/local/opt/llvm/bin/)
+        # set(TOOLSROOT /usr/local/opt/llvm/bin)
 
     elseif (CMAKE_SYSTEM_NAME STREQUAL "Linux")
-        # assume clang is on path
-        set(TOOLSROOT "")
+        set(TOOLSROOT "/usr/bin")
     endif ()
 endif ()
 
