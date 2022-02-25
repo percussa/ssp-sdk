@@ -57,6 +57,8 @@ cd ssp-sdk/
 git checkout tb-v3
 git submodule update --init --recursive
 ```
+(note: url/branch changes for release)
+
 
 now lets build 
 
