@@ -1,3 +1,7 @@
+if(APPLE)
+    set(CMAKE_SYSTEM_NAME Darwin)
+endif()
+
 
 if (DEFINED ENV{BUILDROOT})
     set(BUILDROOT $ENV{BUILDROOT})
@@ -24,7 +28,6 @@ else ()
     endif ()
 endif ()
 
-
 message("using TOOLSROOT  :  ${TOOLSROOT}")
 message("using BUILDROOT  :  ${BUILDROOT}")
 message("using SYSROOT    :  ${CMAKE_SYSROOT}")
@@ -34,8 +37,8 @@ set(GCCROOT ${BUILDROOT}/lib/gcc/arm-rockchip-linux-gnueabihf/8.4.0)
 set(CMAKE_SYSTEM_NAME Linux)
 set(CMAKE_SYSTEM_PROCESSOR armv7l)
 set(triple arm-linux-gnueabihf)
-set($ENV{TOOLSROOT}/clang)
-set($ENV{TOOLSROOT}/clang++)
+set(CMAKE_C_COMPILER ${TOOLSROOT}/clang)
+set(CMAKE_CXX_COMPILER ${TOOLSROOT}/clang++)
 
 set(CMAKE_C_COMPILER_TARGET ${triple})
 set(CMAKE_CXX_COMPILER_TARGET ${triple})

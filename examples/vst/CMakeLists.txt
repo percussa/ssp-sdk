@@ -21,12 +21,7 @@ add_subdirectory(juce)
 if (DEFINED ENV{VSTSDK})
     set(VSTSDK $ENV{VSTSDK})
 else ()
-    # sensible defaults
-    if (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-        set(VSTSDK "$ENV{HOME}/SDKs/Steinberg/VST3/VST3 SDK")
-    elseif (CMAKE_SYSTEM_NAME STREQUAL "Linux")
-        set(VSTSDK "$ENV{HOME}/SDKs/vst3-sdk")
-    endif ()
+    set(VSTSDK "$ENV{HOME}/SDKs/vst3-sdk")
 endif ()
 
 message("using VSTSDK  :  ${VSTSDK}")
