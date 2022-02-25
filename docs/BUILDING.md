@@ -15,6 +15,32 @@
 
 TO DO : clarify these steps 
 
+TODO : clang path need to abstact 
+TODO : sdk path abstract
+
+git submodule update --init --recursive
+
+# Building linux 
+```
+    sudo apt install git
+    sudo apt install cmake
+    sudo apt install llvm
+```
+this is debian package manager, similar with pacman etc on other distros
+
+# Building macos  - using homebrew
+homebrew is useful package manager for macos for many open source tools.
+highly recommended :) 
+see https://brew.sh
+
+```
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    brew install git
+    brew install cmake
+    brew install llvm
+
+```
+
 
 ($ENV{HOME}/SDKs/Steinberg/VST3/VST3 SDK) 
 
@@ -64,5 +90,4 @@ bits of code that will need changing and where
 build on your desktop test as vst
 
 using AudioPluginHost (juce) and why
-
 
