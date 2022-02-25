@@ -51,9 +51,9 @@ juce_add_plugin(QVCA
         # IS_MIDI_EFFECT TRUE/FALSE                 # Is this plugin a MIDI effect?
         # EDITOR_WANTS_KEYBOARD_FOCUS TRUE/FALSE    # Does the editor need keyboard focus?
         COPY_PLUGIN_AFTER_BUILD TRUE                # Should the plugin be installed to a default location after building?
-        PLUGIN_MANUFACTURER_CODE TB00               # A four-character manufacturer id with at least one upper-case character
+        PLUGIN_MANUFACTURER_CODE PERC               # A four-character manufacturer id with at least one upper-case character
         PLUGIN_CODE QVCA                            # A unique four-character plugin id with at least one upper-case character
-        FORMATS VST VST3                            # The formats to build. Other valid formats are: AAX Unity VST AU AUv3
+        FORMATS VST3                                # The formats to build. Other valid formats are: AAX Unity VST AU AUv3
         PRODUCT_NAME "qvca")                        # The name of the final executable, which can differ from the target name
 
 # `juce_generate_juce_header` will create a JuceHeader.h for a given target, which will be generated
@@ -73,7 +73,7 @@ juce_generate_juce_header(QVCA)
 
 target_sources(QVCA
         PUBLIC
-        Source/PluginProcessor.cpp
+        Source/SSPApi.cpp
         PRIVATE
         Source/Oscilloscope.cpp
         Source/PluginEditor.cpp
@@ -115,6 +115,6 @@ target_link_libraries(QVCA PRIVATE
         juce::juce_audio_utils)
 
 
-set_target_properties(${PROJECT_NAME}_VST PROPERTIES PREFIX "")
+#set_target_properties(${PROJECT_NAME}_VST PROPERTIES PREFIX "")
 set_target_properties(${PROJECT_NAME}_VST3 PROPERTIES PREFIX "")
 
