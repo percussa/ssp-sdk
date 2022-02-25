@@ -4,17 +4,24 @@ TEMP FILE - just so I dont forget steps for MAIN build doc
 # log on to build machine
 
 ```
-ssh pi@rpi.local
+ssh user@build.local
 ```
 
 # make sure we have tools we need
 
+for linux 
 ```
 sudo apt install cmake git llvm clang
 ```
 
 note: some distros may combine llvm and clang, some may not... 
 check clang is present after install!
+
+for macOS (using homebrew)
+```
+brew install cmake git llvm 
+```
+
 
 
 # setup requirements for build
