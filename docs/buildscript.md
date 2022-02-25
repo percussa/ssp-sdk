@@ -68,7 +68,7 @@ create cmake files
 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=../xcSSP.cmake .. 
 ```
 
-note: if this fails, e.g due to not finding something entire build directory contents before trying again.
+note: if this fails, e.g due to not finding something, delete entire build directory contents before trying again.
 as it caches details, and failing to delete will get confusing results ! 
 
 
@@ -79,8 +79,8 @@ cmake --build . -v -- -j 8
 ```
 
 resuls are something like: 
-./api/test/libtest.so
-./QVCA_artefacts/Release/VST3/qvca.vst3/Contents/armv7l-linux/qvca.so
+- ./api/test/libtest.so
+- ./QVCA_artefacts/Release/VST3/qvca.vst3/Contents/armv7l-linux/qvca.so
 
 
 
