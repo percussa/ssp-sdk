@@ -45,8 +45,8 @@ public:
     void onLeftShiftButton(bool) {}
     void onRightShiftButton(bool) {}
 
-    void onEncoder(int,float) {}
-    void onEncoderSwitch(int,bool) {}
+    void onEncoder(int,float);
+    void onEncoderSwitch(int,bool);
 
 private:
     PluginProcessor &processor;

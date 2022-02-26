@@ -24,25 +24,36 @@
 #include <array>
 #include <string>
 
+
+namespace ID {
+#define PARAMETER_ID(str) constexpr const char* str { #str };
+PARAMETER_ID (gain1)
+PARAMETER_ID (gain2)
+PARAMETER_ID (gain3)
+PARAMETER_ID (gain4)
+#undef PARAMETER_ID
+}
+
+
 class PluginProcessor : public AudioProcessor {
 public:
     PluginProcessor();
     ~PluginProcessor();
 
-    void prepareToPlay(double sampleRate, int samplesPerBlock) override;
-    void releaseResources() override;
+    const String getName() const override { return JucePlugin_Name; }
 
+    void prepareToPlay(double sampleRate, int samplesPerBlock) override;
     void processBlock(AudioSampleBuffer &, MidiBuffer &) override;
+    void releaseResources() override;
 
     AudioProcessorEditor *createEditor() override;
 
     bool hasEditor() const override { return true; }
 
-    const String getName() const override { return JucePlugin_Name; }
-
     void getStateInformation(MemoryBlock &destData) override;
     void setStateInformation(const void *data, int sizeInBytes) override;
 
+    // buses are the CV/audio inputs/outputs
     static const String getInputBusName(int channelIndex);
     static const String getOutputBusName(int channelIndex);
 
@@ -56,6 +67,10 @@ public:
         }
         return props;
     }
+
+    // VST parameters
+    juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
+
 
     // these methods are required for a VST , but the SSP is not using
     bool acceptsMidi() const override { return false; }
@@ -75,19 +90,28 @@ public:
 
     void changeProgramName(int index, const String &newName) override {}
 
-
+    static constexpr unsigned I_MAX = 8;
+    static constexpr unsigned O_MAX = 8;
+private:
+    bool inputEnabled_[I_MAX]{false, false, false, false, false, false, false, false};
+    bool outputEnabled_[O_MAX]{false, false, false, false, false, false, false, false};
+    AudioProcessorValueTreeState apvts_;
 public:
     void onInputChanged(int, bool);
     void onOutputChanged(int, bool);
-    static constexpr unsigned I_MAX = 8;
-    static constexpr unsigned O_MAX = 8;
     CriticalSection lock;
     AudioSampleBuffer inBuffer;
     AudioSampleBuffer outBuffer;
 
-private:
-    bool inputEnabled_[I_MAX] {false, false, false, false, false,false, false, false };
-    bool oututEnabled_[O_MAX] {false, false, false, false, false,false, false, false };
+    struct PluginParams {
+        using Parameter = juce::RangedAudioParameter;
+        explicit PluginParams(juce::AudioProcessorValueTreeState &);
+        // we could use an array, but let's keep this simple!
+        Parameter &gain1;
+        Parameter &gain2;
+        Parameter &gain3;
+        Parameter &gain4;
+    } params_;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginProcessor)
 };
