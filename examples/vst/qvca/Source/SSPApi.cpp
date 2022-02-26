@@ -238,8 +238,30 @@ private:
 
 extern "C" __attribute__ ((visibility("default")))
 Percussa::SSP::PluginDescriptor *createDescriptor() {
-    return PluginProcessor::createDescriptor();
+    std::vector<std::string> inNames;
+    std::vector<std::string> outNames;
+    auto busProps = PluginProcessor::getBusesProperties();
+
+    for (auto layout: busProps.inputLayouts) {
+        inNames.push_back(layout.busName.toStdString());
+    }
+    for (auto layout: busProps.outputLayouts) {
+        outNames.push_back(layout.busName.toStdString());
+    }
+
+    auto desc = new Percussa::SSP::PluginDescriptor;
+
+    desc->name = JucePlugin_Name;
+    desc->descriptiveName = JucePlugin_Desc;
+    desc->manufacturerName = JucePlugin_Manufacturer;
+    desc->version = JucePlugin_VersionString;
+    desc->uid = (int) JucePlugin_VSTUniqueID;
+    desc->inputChannelNames = inNames;
+    desc->outputChannelNames = outNames;
+
+    return desc;
 }
+
 
 extern "C" __attribute__ ((visibility("default")))
 Percussa::SSP::PluginInterface *createInstance() {
@@ -248,7 +270,7 @@ Percussa::SSP::PluginInterface *createInstance() {
 
 
 extern "C" __attribute__ ((visibility("default")))
-void getApiVersion(unsigned& major, unsigned& minor) {
+void getApiVersion(unsigned &major, unsigned &minor) {
     major = Percussa::SSP::API_MAJOR_VERSION;
     minor = Percussa::SSP::API_MINOR_VERSION;
 }

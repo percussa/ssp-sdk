@@ -77,13 +77,10 @@ public:
 
 
 public:
-    static Percussa::SSP::PluginDescriptor *createDescriptor();
     void onInputChanged(int, bool);
     void onOutputChanged(int, bool);
     static constexpr unsigned I_MAX = 8;
     static constexpr unsigned O_MAX = 8;
-
-
     CriticalSection lock;
     AudioSampleBuffer inBuffer;
     AudioSampleBuffer outBuffer;
