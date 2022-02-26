@@ -45,7 +45,7 @@ public:
     }
 
     SSP_PluginEditorInterface() {
-//    if (editor_) delete editor_;
+        if (editor_) delete editor_;
     }
 
     ~SSP_PluginEditorInterface() override {
@@ -131,7 +131,7 @@ private:
 };
 
 // do NOT use MSG MANAGER unless you have to !
-#define USE_MSG_MANAGER
+//#define USE_MSG_MANAGER
 
 #ifdef USE_MSG_MANAGER
 
@@ -167,8 +167,8 @@ public:
     }
 
     ~SSP_PluginInterface() {
-//        if(editor_) delete editor_;
-//        if(processor_) delete processor_;
+        if(editor_) delete editor_;
+        if(processor_) delete processor_;
     }
 
 
