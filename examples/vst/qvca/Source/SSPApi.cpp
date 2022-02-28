@@ -1,5 +1,5 @@
 
-#include "Percussa.h"
+#include <Percussa.h>
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
@@ -44,12 +44,8 @@ public:
         editor_(editor) {
     }
 
-    SSP_PluginEditorInterface() {
-        if (editor_) delete editor_;
-    }
-
     ~SSP_PluginEditorInterface() override {
-
+        if (editor_) delete editor_;
     }
 
     void frameStart() override {
@@ -130,40 +126,11 @@ private:
     PluginEditor *editor_;
 };
 
-// do NOT use MSG MANAGER unless you have to !
-//#define USE_MSG_MANAGER
-
-#ifdef USE_MSG_MANAGER
-
-class MsgThead : public juce::Thread {
-public:
-    MsgThead() : Thread(String(JucePlugin_Name) + String(": MsgThread")) {}
-
-    void run() override {
-        MessageManager::getInstance()->runDispatchLoop();
-    }
-};
-
-static MsgThead msgThread_;
-
-void startMessageManager() {
-    if (MessageManager::getInstanceWithoutCreating() == nullptr) {
-        std::cerr << "create Message manager in " << JucePlugin_Name << std::endl;
-        MessageManager::getInstance();
-    }
-    msgThread_.startThread();
-}
-
-#endif
 
 
 class SSP_PluginInterface : public Percussa::SSP::PluginInterface {
 public:
     SSP_PluginInterface(PluginProcessor *p) : processor_(p), editor_(nullptr) {
-
-#ifdef USE_MSG_MANAGER
-        startMessageManager();
-#endif
     }
 
     ~SSP_PluginInterface() {

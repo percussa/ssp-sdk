@@ -1,4 +1,4 @@
-#include "Percussa.h"
+#include <Percussa.h>
 
 class TestPluginEditorInterface : public Percussa::SSP::PluginEditorInterface {
 public:
