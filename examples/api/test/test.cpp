@@ -12,30 +12,13 @@ public:
 	GLuint VBO = 0; 
 	unsigned int shaderProgram = 0; 
 
-	static constexpr float projXmin   =  0.0f;
-	static constexpr float projXmax   =  1.0f;
-	static constexpr float projYmin   =  0.0f;
-	static constexpr float projYmax   =  1.0f;
-	static constexpr float projZmin   = -1.0f;
-	static constexpr float projZmax   =  1.0f;
-
-	float z = projZmax; 
-	float w = (projXmax-projXmin)*0.1f; 
-	float h = (projYmax-projYmin)*0.1f;
-	float midx = (projXmax-projXmin)*0.5f;
-	float midy = (projYmax-projYmin)*0.5f;
 	float x = 0;
 	float y = 0;
+	float z = 0;
+	float w = 0.25f;
+	float h = std::sqrt(3)/2*w; 
 
-	glm::mat4 proj = glm::ortho(
-		projXmin-0.25f,
-		projXmax+0.25f,
-		projYmin,
-		projYmax,
-		projZmin,
-		projZmax
-	); 
-
+	glm::mat4 proj = glm::mat4(1.0f);  
 	glm::mat4 view = glm::mat4(1.0f);
 	glm::mat4 model = glm::mat4(1.0f);
 
@@ -126,8 +109,6 @@ public:
 		vLoc = glGetUniformLocation(shaderProgram, "view");
 		pLoc = glGetUniformLocation(shaderProgram, "proj");
 
-		view = glm::translate(view, glm::vec3(0.5f, 0.5f, 0.0f)); 
-
 		glUniformMatrix4fv(mLoc, 1, false, glm::value_ptr(model)); 
 		glUniformMatrix4fv(vLoc, 1, false, glm::value_ptr(view)); 
 		glUniformMatrix4fv(pLoc, 1, false, glm::value_ptr(proj)); 
@@ -182,16 +163,12 @@ public:
 	// called after renderToImage, when all OpenGLES geometry is being drawn. 
 	void draw(int width, int height) override {
 
-		float ar = width;
-		ar /= height; 
-
-		//glClearColor(0.0f, 0.0f, counter, 1.0f);
 		glUseProgram(shaderProgram);
 		glBindVertexArray(VAO); 
 
 		x = 0; 
 		y = 0; 
-		w = 0.25f; 
+		w = 0.75f;
 		h = std::sqrt(3)/2*w; 
 		z = 1.0f; 
 
@@ -206,35 +183,17 @@ public:
 		glBindBuffer(GL_ARRAY_BUFFER, 0); 
 
 		// rotate model matrix by 1 degrees around z axis and update in shader
-		model = glm::rotate(
-				glm::mat4(1.0f), 
-				glm::radians(counter), 
-				glm::vec3(0.0f, 0.0f, 1.0f)); 
-
+		model = glm::rotate(model, glm::radians(1.0f), glm::vec3(0.0f, 0.0f, 1.0f)); 
 		glUniformMatrix4fv(mLoc, 1, false, glm::value_ptr(model)); 
 
-		proj = glm::ortho(
-			-ar, ar,
-			-1.0f, 1.0f, 
-			-1.0f, 1.0f 
-		); 
-
+		// set orthogonal projection matrix taking into account aspect ratio of screen
+		float ar = (float)(width) / height;
+		proj = glm::ortho(-ar, ar, -1.0f, 1.0f, -1.0f, 1.0f); 
 		glUniformMatrix4fv(pLoc, 1, false, glm::value_ptr(proj)); 
 
 		// draw triangle 
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 		glBindVertexArray(0); 
-/*
-		x += 0.001f; 
-		y += 0.001f; 
-		if (x > projXmax) x -= projXmax; 
-		if (y > projYmax) y -= projYmax; 
-*/
-		counter += 1.0f; 
-		if (counter > 360.0f) 
-			counter -= 360.0f; 
-		//std::clog << __FUNCTION__ << ": counter: " << counter << std::endl; 
-		//throw std::runtime_error("stop"); 
 	}
 };
 
