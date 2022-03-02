@@ -12,11 +12,19 @@ public:
 	GLuint VBO = 0; 
 	unsigned int shaderProgram = 0; 
 
-	float x = 0;
-	float y = 0;
-	float z = 0;
-	float w = 0.25f;
+	// vertices for an equilateral triangle around the origin (0, 0)
+	// see https://math.stackexchange.com/questions/2385147/how-do-i-represent-an-equilateral-triangle-in-cartesian-coordinates-centered-aro 
+	// for the z coordinate, use 1.0f so we place the triangle closest 
+	// to the viewer in front of any other geometry (see orthogonal 
+	// projection matrix below).  
+
+	float w = 1.25f;
 	float h = std::sqrt(3)/2*w; 
+	float vertices[3][3] = {
+		{    0,  h/2,	1.0f }, 
+		{ -w/2,	-h/2,	1.0f },
+		{  w/2,	-h/2,	1.0f },
+	}; 
 
 	glm::mat4 proj = glm::mat4(1.0f);  
 	glm::mat4 view = glm::mat4(1.0f);
@@ -99,20 +107,16 @@ public:
 
 		glDeleteShader(vertexShader);
 		glDeleteShader(fragmentShader);
-
 		std::clog << __FUNCTION__ << ": shaders compiled and linked" << std::endl; 
 
-		// set proj/view/model matrices in shader 
+		// set initial proj/view/model matrices in shader 
 		glUseProgram(shaderProgram);
-
 		mLoc = glGetUniformLocation(shaderProgram, "model");
 		vLoc = glGetUniformLocation(shaderProgram, "view");
 		pLoc = glGetUniformLocation(shaderProgram, "proj");
-
 		glUniformMatrix4fv(mLoc, 1, false, glm::value_ptr(model)); 
 		glUniformMatrix4fv(vLoc, 1, false, glm::value_ptr(view)); 
 		glUniformMatrix4fv(pLoc, 1, false, glm::value_ptr(proj)); 
-
 		std::clog << __FUNCTION__ << ": set proj/view/model matrices" << std::endl; 
 
 		glGenVertexArrays(1, &VAO);
@@ -165,18 +169,6 @@ public:
 
 		glUseProgram(shaderProgram);
 		glBindVertexArray(VAO); 
-
-		w = 0.75f;
-		h = std::sqrt(3)/2*w; 
-		x = -w/2; 
-		y = -h/2;
-		z = 1.0f; 
-
-		float vertices[3][3] = {
-			{ x,		y,		z },
-			{ x + w,	y,		z },
-			{ x + w/2,	y + h,		z },
-		}; 
 
 		glBindBuffer(GL_ARRAY_BUFFER, VBO); 
 		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices); 
