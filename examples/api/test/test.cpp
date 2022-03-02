@@ -166,16 +166,16 @@ public:
 		glUseProgram(shaderProgram);
 		glBindVertexArray(VAO); 
 
-		x = 0; 
-		y = 0; 
 		w = 0.75f;
 		h = std::sqrt(3)/2*w; 
+		x = -w/2; 
+		y = -h/2;
 		z = 1.0f; 
 
 		float vertices[3][3] = {
 			{ x,		y,		z },
 			{ x + w,	y,		z },
-			{ x + w*0.5f,	y + h,		z },
+			{ x + w/2,	y + h,		z },
 		}; 
 
 		glBindBuffer(GL_ARRAY_BUFFER, VBO); 
