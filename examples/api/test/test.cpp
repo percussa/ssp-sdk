@@ -17,9 +17,22 @@ public:
 	GLuint VBOs[numVBOs] = {}; 
 	unsigned int shaderProgram = 0; 
 
+	static constexpr float Ymin = -1.0f;
+	static constexpr float Ymax =  1.0f; 
+	static constexpr float Zmin = -1.0f;
+	static constexpr float Zmax =  1.0f; 
+
+	glm::mat4 proj = glm::mat4(1.0f);  
+	glm::mat4 view = glm::mat4(1.0f);
+	glm::mat4 model = glm::mat4(1.0f);
+
+	GLint mLoc = 0; 
+	GLint vLoc = 0; 
+	GLint pLoc = 0; 
+
 	// vertices for an equilateral triangle around the origin (0, 0)
 	// see https://math.stackexchange.com/questions/2385147/how-do-i-represent-an-equilateral-triangle-in-cartesian-coordinates-centered-aro 
-	// for the z coordinate, use 1.0f so we place the triangle closest 
+	// for the z coordinate, use Zmax so we place the triangle closest 
 	// to the viewer in front of any other geometry (see orthogonal 
 	// projection matrix below).  
 
@@ -30,9 +43,9 @@ public:
 	static const int numCompsPerVert = 4; 
 
 	float vertices[numVertices][numCompsPerVert] = {
-		{    0,  h/2,	1.0f, 	1.0f, }, 
-		{ -w/2,	-h/2,	1.0f,	1.0f, },
-		{  w/2,	-h/2,	1.0f, 	1.0f, },
+		{    0,  h/2,	Zmax, 	1.0f, }, 
+		{ -w/2,	-h/2,	Zmax,	1.0f, },
+		{  w/2,	-h/2,	Zmax, 	1.0f, },
 	}; 
 
 	// use colors red, green, blue with alpha = 1.0f for vertices 
@@ -41,14 +54,6 @@ public:
 	       	{ 0.0f, 1.0f, 0.0f, 1.0f, }, 
 		{ 0.0f, 0.0f, 1.0f, 1.0f, }, 	
 	}; 
-
-	glm::mat4 proj = glm::mat4(1.0f);  
-	glm::mat4 view = glm::mat4(1.0f);
-	glm::mat4 model = glm::mat4(1.0f);
-
-	GLint mLoc = 0; 
-	GLint vLoc = 0; 
-	GLint pLoc = 0; 
 
 public:
 	TestPluginEditorInterface() {
@@ -201,7 +206,7 @@ public:
 
 		// set orthogonal projection matrix taking into account aspect ratio of screen
 		float ar = (float)(width) / height;
-		proj = glm::ortho(-ar, ar, -1.0f, 1.0f, -1.0f, 1.0f); 
+		proj = glm::ortho(-ar, ar, Ymin, Ymax, Zmin, Zmax); 
 		glUniformMatrix4fv(pLoc, 1, false, glm::value_ptr(proj)); 
 
 		// draw triangle 
