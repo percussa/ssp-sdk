@@ -11,8 +11,13 @@ ssh user@build.local
 
 for linux 
 ```
-sudo apt install cmake git llvm clang
+sudo apt install cmake git llvm clang g++-10-arm-linux-gnueabihf 
 ```
+
+
+(although this is v10 of g++ others will likely work)
+
+
 
 note: some distros may combine llvm and clang, some may not... 
 check clang is present after install!
@@ -21,6 +26,7 @@ for macOS (using homebrew)
 ```
 brew install cmake git llvm 
 ```
+(some installs may need arm-linux-gnueabihf-binutils, gcc-arm-embedded)
 
 
 
