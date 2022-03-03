@@ -9,7 +9,12 @@
 class TestPluginEditorInterface : public Percussa::SSP::PluginEditorInterface {
 public: 	
 	GLuint VAO = 0; 
-	GLuint VBO = 0; 
+	enum VboIndex { 
+		kVertices = 0, 
+		kColors, 
+		numVBOs, 
+	}; 
+	GLuint VBOs[numVBOs] = {}; 
 	unsigned int shaderProgram = 0; 
 
 	// vertices for an equilateral triangle around the origin (0, 0)
@@ -20,10 +25,21 @@ public:
 
 	float w = 1.25f;
 	float h = std::sqrt(3)/2*w; 
-	float vertices[3][3] = {
-		{    0,  h/2,	1.0f }, 
-		{ -w/2,	-h/2,	1.0f },
-		{  w/2,	-h/2,	1.0f },
+
+	static const int numVertices = 3; 
+	static const int numCompsPerVert = 4; 
+
+	float vertices[numVertices][numCompsPerVert] = {
+		{    0,  h/2,	1.0f, 	1.0f, }, 
+		{ -w/2,	-h/2,	1.0f,	1.0f, },
+		{  w/2,	-h/2,	1.0f, 	1.0f, },
+	}; 
+
+	// use colors red, green, blue with alpha = 1.0f for vertices 
+	float colors[numVertices][numCompsPerVert] = { 
+		{ 1.0f, 0.0f, 0.0f, 1.0f, }, 
+	       	{ 0.0f, 1.0f, 0.0f, 1.0f, }, 
+		{ 0.0f, 0.0f, 1.0f, 1.0f, }, 	
 	}; 
 
 	glm::mat4 proj = glm::mat4(1.0f);  
@@ -39,12 +55,15 @@ public:
 
 		static const char* vertexShaderSource = R"(
 			#version 300 es
-			layout (location = 0) in vec3 aPos;
+			layout (location = 0) in vec4 aPos;
+			layout (location = 1) in vec4 inColor; 
+			out vec4 outColor;
 			uniform mat4 model; 
 			uniform mat4 view;
 			uniform mat4 proj; 
 			void main() {
-				gl_Position = proj*view*model*vec4(aPos.x, aPos.y, aPos.z, 1.0);
+				gl_Position = proj*view*model*aPos;
+				outColor = inColor; 
 			}
 		)";
 
@@ -52,8 +71,9 @@ public:
 			#version 300 es
 			precision highp float; 
 			out vec4 FragColor;
+			in vec4 outColor; 
 			void main() { 
-				FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+				FragColor = outColor;
 			}
 		)";
 
@@ -120,7 +140,7 @@ public:
 		std::clog << __FUNCTION__ << ": set proj/view/model matrices" << std::endl; 
 
 		glGenVertexArrays(1, &VAO);
-		glGenBuffers(1, &VBO);
+		glGenBuffers(numVBOs, VBOs);
 
 		// bind the Vertex Array Object first, then bind and set vertex buffer(s), 
 		// and then configure vertex attributes(s).
@@ -130,39 +150,34 @@ public:
 		glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &v); 
 		std::clog << __FUNCTION__ << ": max vertex attribs: " << v << std::endl; 
 
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		//glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-		glBufferData(GL_ARRAY_BUFFER, 3*3*sizeof(float), NULL, GL_DYNAMIC_DRAW);
-
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-
-		// note that this is allowed, the call to glVertexAttribPointer registered 
-		// VBO as the vertex attribute's bound vertex buffer object so afterwards 
-		// we can safely unbind
-		glBindBuffer(GL_ARRAY_BUFFER, 0); 
+		// allocate VBOs, enable vertex attrib pointers, etc  
+		for (int i=0; i<numVBOs; i++) { 
+			glBindBuffer(GL_ARRAY_BUFFER, VBOs[i]);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), NULL, GL_DYNAMIC_DRAW);
+			glEnableVertexAttribArray(i);
+			glVertexAttribPointer(i, numCompsPerVert, 
+				GL_FLOAT, GL_FALSE, numCompsPerVert*sizeof(float), (void*)0);
+			glBindBuffer(GL_ARRAY_BUFFER, 0); 
+		}
+		std::clog << __FUNCTION__ << ": vertex buffers created" << std::endl; 
 
 		// You can unbind the VAO afterwards so other VAO calls won't accidentally 
 		// modify this VAO, but this rarely happens. Modifying other VAOs requires 
 		// a call to glBindVertexArray anyways so we generally don't unbind VAOs 
 		// (nor VBOs) when it's not directly necessary.
 		glBindVertexArray(0); 
-
-		std::clog << __FUNCTION__ << ": vertex buffers written" << std::endl; 
 	}
 
 	~TestPluginEditorInterface() {
 	
 		glDeleteVertexArrays(1, &VAO);
-		glDeleteBuffers(1, &VBO);
+		glDeleteBuffers(numVBOs, VBOs);
 		glDeleteProgram(shaderProgram);
 	}
 
 	void frameStart() override {}
 	void visibilityChanged(bool b) override {}
-	void renderToImage(unsigned char *buffer, int width, int height) override {}
-
-	float counter = 0.0f; 
+	void renderToImage(unsigned char* buffer, int width, int height) override {}
 
 	// called after renderToImage, when all OpenGLES geometry is being drawn. 
 	void draw(int width, int height) override {
@@ -170,8 +185,14 @@ public:
 		glUseProgram(shaderProgram);
 		glBindVertexArray(VAO); 
 
-		glBindBuffer(GL_ARRAY_BUFFER, VBO); 
+		// update vertices  
+		glBindBuffer(GL_ARRAY_BUFFER, VBOs[kVertices]); 
 		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices); 
+		glBindBuffer(GL_ARRAY_BUFFER, 0); 
+
+		// update colors 
+		glBindBuffer(GL_ARRAY_BUFFER, VBOs[kColors]); 
+		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(colors), colors); 
 		glBindBuffer(GL_ARRAY_BUFFER, 0); 
 
 		// rotate model matrix by 1 degrees around z axis and update in shader
@@ -184,21 +205,20 @@ public:
 		glUniformMatrix4fv(pLoc, 1, false, glm::value_ptr(proj)); 
 
 		// draw triangle 
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawArrays(GL_TRIANGLES, 0, numVertices);
 		glBindVertexArray(0); 
 	}
 };
 
-class TestPluginInterface : public Percussa::SSP::PluginInterface {
+class TestPluginInterface: public Percussa::SSP::PluginInterface {
 public:
-    TestPluginInterface() : editor_(nullptr) {
-
+    TestPluginInterface(): editor_(nullptr) {
     }
 
     ~TestPluginInterface() {}
 
-    Percussa::SSP::PluginEditorInterface *getEditor() override {
-        if (editor_ == nullptr) {
+    Percussa::SSP::PluginEditorInterface* getEditor() override {
+	if (editor_ == nullptr) {
             editor_ = new TestPluginEditorInterface();
         }
         return editor_;
@@ -214,23 +234,20 @@ public:
 
     void outputEnabled(int n, bool val) override {}
 
-    void getState(void **buffer, size_t *size) override {}
+    void getState(void** buffer, size_t* size) override {}
 
-    void setState(void *buffer, size_t size) override {}
+    void setState(void* buffer, size_t size) override {}
 
     void prepare(double sampleRate, int samplesPerBlock) override {}
 
-    void process(float **channelData, int numChannels, int numSamples) override {
-
-    }
+    void process(float** channelData, int numChannels, int numSamples) override {} 
 
 private:
-    Percussa::SSP::PluginEditorInterface *editor_ = nullptr;
+    Percussa::SSP::PluginEditorInterface* editor_ = nullptr;
 };
 
-
 extern "C" __attribute__ ((visibility("default")))
-Percussa::SSP::PluginDescriptor *createDescriptor() {
+Percussa::SSP::PluginDescriptor* createDescriptor() {
     static std::vector<std::string> inNames = {"In 1", "In 2"};
     static std::vector<std::string> outNames = {"Out 1", "Out 2"};
     auto desc = new Percussa::SSP::PluginDescriptor;
@@ -246,7 +263,7 @@ Percussa::SSP::PluginDescriptor *createDescriptor() {
 }
 
 extern "C" __attribute__ ((visibility("default")))
-Percussa::SSP::PluginInterface *createInstance() {
+Percussa::SSP::PluginInterface* createInstance() {
     return new TestPluginInterface();
 }
 
