@@ -84,7 +84,20 @@ namespace SSP {
 		// assume that the previously drawn graphics for this particular plugin instance
 		// type are still valid. this function is called from the UI thread.
 		// it is only called when the plugin editor is visible.
-		virtual void renderToImage(unsigned char* buffer, int width, int height) = 0;
+		virtual void renderToImage(unsigned char* buffer, int width, int height) {} 
+
+		// this function is called on every frame to draw OpenGLES graphics. 
+		// the code in this function might look something like this: 
+		// 	glUseProgram ... 
+		//	glBindVertexArray(VAO);
+		//		activate texture ... 
+		//		update triangle coordinates ... 
+		//	glDrawArrays(GL_TRIANGLES, 0, ...); 
+		//	glBindVertexArray(0);
+		// the initialization code to compile shaders, init VBOs and VAOs and textures
+		// should go into the constructors of the plugin or plugin editor. the parameters
+		// passed to this function contain the size of the viewport.  
+		virtual void draw(int width, int height) {} 
 	};
 
 	// class interface allowing the host application to ask your plugin
