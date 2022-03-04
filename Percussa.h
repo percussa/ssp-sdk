@@ -115,9 +115,9 @@ namespace SSP {
 		// the above PluginEditorInterface interface. this function should
 		// only allocate one instance of the class, and subsequent calls
 		// should return the same instance, which was allocated previously.
-		// the host will deallocate the intance, so your plugin should not
-		// deallocate it under any circumstances.
-		// this function is called from the UI thread.
+		// the host will NOT deallocate the instance returned via this function, 
+		// your plugin is responsible for doing that. this function is called 
+		// from the UI thread.
 		virtual PluginEditorInterface* getEditor() = 0;
 
 		// called when a button is pressed. mapping of buttons is as follows:
