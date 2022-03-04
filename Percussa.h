@@ -165,8 +165,10 @@ namespace SSP {
 		// so it can be saved in the preset files written to disk.
 		// you should return a pointer to a buffer containing your
 		// plugin data, as well as the size of the buffer containing
-		// the data.
-		// this function is called from the UI thread.
+		// the data. the host will call delete[] on the buffer pointer
+		// you return, after it is done copying data from it, so inside 
+		// getState you should use new char[...] to allocate the buffer 
+		// you are returning. this function is called from the UI thread.
 		virtual void getState(void** buffer, size_t* size) {}
 
 		// this is called to set the state of your plugin, after a
