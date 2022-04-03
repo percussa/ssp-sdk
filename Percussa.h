@@ -26,7 +26,7 @@ namespace Percussa {
 namespace SSP {
 
     constexpr static unsigned API_MAJOR_VERSION = 3;
-    constexpr static unsigned API_MINOR_VERSION = 4;
+    constexpr static unsigned API_MINOR_VERSION = 5;
 
 	// struct describing your plugin. for backwards compatibility, you should
 	// assign the same values to the members in the struct as what you used
@@ -44,6 +44,11 @@ namespace SSP {
 		int uid = 0;
 		std::vector<std::string> inputChannelNames;
 		std::vector<std::string> outputChannelNames;
+		unsigned colour =  (((((
+		  0xff << 8) // alpha 
+		| 0x00 ) << 8 ) // red
+		| 0x7f ) << 8 ) //green 
+		| 0x00 ; // blue
 	};
 
 	// class interface allowing the host application to ask your plugin
