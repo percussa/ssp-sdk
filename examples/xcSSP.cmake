@@ -8,7 +8,7 @@ if (DEFINED ENV{BUILDROOT})
     set(CMAKE_SYSROOT ${BUILDROOT}/arm-rockchip-linux-gnueabihf/sysroot)
 else ()
     message("warning: BUILDROOT environment variable assuming in current directory")
-    set(BUILDROOT "./arm-rockchip-linux-gnueabihf_sdk-buildroot")
+    set(BUILDROOT "$ENV{HOME}/buildroot/output/host")
     set(CMAKE_SYSROOT ${BUILDROOT}/arm-rockchip-linux-gnueabihf/sysroot)
 endif ()
 
