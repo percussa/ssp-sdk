@@ -1,5 +1,5 @@
 /*
-	Copyright (c) 2018 - Bert Schiettecatte, Noisetron LLC. 
+	Copyright (c) 2022 - Bert Schiettecatte, Noisetron LLC. 
 
 	This software is part of the Percussa SSP's software development kit (SDK). 
 	For more info about Percussa or the SSP visit http://www.percussa.com/ 
@@ -18,6 +18,7 @@
 
 #pragma once
 
+#include <mutex>
 #include <assert.h>
 #include "../JuceLibraryCode/JuceHeader.h"
 
