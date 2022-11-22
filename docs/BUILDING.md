@@ -1,93 +1,139 @@
-#### WORK IN PROGRESS ### 
+# building 
+This document covers creating/downloading a project , and then building it for the SSP.
 
 
-# Building examples
+# general workflow
+There are three steps to build SSP modules, which must be completed in order.
 
-## prerequisites 
+a) setup the development environment 
+done once, and overed in DEVENV.md
 
-- clone this repository locally 
-- download the ssp buildroot 
-- ensure required dev software is installed 
--- llvm (includes clang)
--- cmake
--- git (optional)  
--- vst3 sdk
+b) download/create project 
+done once, per project, and covered in this document.
 
-TO DO : clarify these steps 
+c) build project
+done each time you want to build/create the modules for the SSP
 
-TODO : clang path need to abstact 
-TODO : sdk path abstract
 
+note: you will need to ensure the build tools from the development enviroment are on your path.
+(as covered in DEVENV.md)
+
+
+
+Note: 
+Specific directories and examples are mentioned in these documents.
+however, most can be changed to your own requirements, with simple overrides.
+but this is not covered extensively here, to keep things clear and simple.
+
+
+
+# B) download/create project
+
+obviously we need to have some code to create a module :)
+either we are going to create our own new code, or download an existing project.
+
+lets cover the first.
+
+
+notes:
+Im not going to cover in any detail, the following   
+- git, there are many guides on this
+- c++ programming, dsp programming and related
+(Id recommend the juce docs for a good starter here)
+
+
+
+## i) download project
+we use github general to store projects, and this comes with a URL 
+
+first Id recomment you store all dev projects in one place..
+
+
+an example might be: 
+
+e.g. 
+```
+mkdir ~/projects
+cd ~/projects
+```
+
+
+
+### ii) using the ssp-sdk examples
+
+```
+cd ~/projects
+git clone https://github.com/percussa/ssp-sdk.git
+cd ssp-sdk/
 git submodule update --init --recursive
-
-# Building linux 
-```
-    sudo apt install git
-    sudo apt install cmake
-    sudo apt install llvm
-```
-this is debian package manager, similar with pacman etc on other distros
-
-# Building macos  - using homebrew
-homebrew is useful package manager for macos for many open source tools.
-highly recommended :) 
-see https://brew.sh
-
-```
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    brew install git
-    brew install cmake
-    brew install llvm
-
 ```
 
+ok, congratulations... now we are all set to create our first module!
 
-($ENV{HOME}/SDKs/Steinberg/VST3/VST3 SDK) 
+### creating a new module
+I would recommend using the ssp-sdk examples, as a 'template' for your own projects.
+essentially you can just copy the examples directory, and modify to your needs.
 
-## build environment (short explaination)
+doing so is beyond the scope of this documents, since you will soon need to understand more complex topics, 
+like cmake, build systems, c++ etc...
 
-## TODO : talk about using llvm as cross compiler and the role of build root ## 
+
+if you are a non-developer wanting to create modules, you may want to look at 
+
+Important note: if you base of the VST/JUCE example, you need to review licencing of VST3/JUCE.
+the 'raw' ssp sdk example has no licensing requirements.
 
 
-## building 
+# C) building project 
+
+there are really two steps to building a project 
+
+first we need to prepare the projects build setup (aka makefiles), this is done once
+then we need to compile
+
+
+## create build setup
+
+assuming we are using the ssp-sdk examples as above
+so are in `~/projects/ssp-sdk`
 
 ```
 cd examples
 mkdir build 
 cd build 
 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=../xcSSP.cmake .. 
-cmake --build . -- -j 8 
 ```
 
-### TODO : explain above what is it doing ## 
-
-## installing/testing on SSP
 
 
+## compiling
+the moment we have been building up to...
+actually compiling the module! 
 
-# next steps
+```
+cmake --build . -- -j 4 
+```
 
-## goals/expections 
+voila, we have build the modules
 
-what are we doing here - how to create a vst using example as a starting point.
-what we are NOT doing here - teaching DSP/C++ ;) 
+you will see that whilst building, it reports the targets... 
+aka, the modules that you are going to want to copy to your SSP 
 
-
-## building your own VST for the SSP.
-
-### TODO ###
-basically go thru copying example into new directory, 
-changing cmake etc to have a new name
-
-bits of code that will need changing and where
-- your own parameters
-- your own IO
-- designing your own UI 
-- implement your own DSP 
+e.g.
+```
+./api/test/libtest.so
+./QVCA_artefacts/Release/VST3/qvca.vst3/Contents/armv7l-linux/qvca.so
+```
 
 
-## tips on developing 
-build on your desktop test as vst
+note: 
+you can see that QVCA is reported as a VST... and indeed it is.
+however, in reality it **also** supports the SSP SDK API, which is how the SSP actually uses it.
 
-using AudioPluginHost (juce) and why
+being a vst3, is useful to support other platforms, in particular for testing/development on your desktop.
+(this is beyond the scope of this document)
+
+
+
+
 
