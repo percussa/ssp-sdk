@@ -5,6 +5,7 @@ SDK for the Percussa SSP allowing
 
 
 Visit http://www.percussa.com/ for more info about the Percussa SSP Eurorack module. 
+
 For any questions visit the forum at http://forum.percussa.com/ 
 
 
@@ -28,6 +29,8 @@ second, is to download projects, and build them, covered in [docs/BUILDING.md](d
 # Resources
 
 Percussa Forum - [specifically this topic](https://forum.percussa.com/t/creating-modules-for-the-ssp-aka-ssp-sdk-updated)
-covers many other aspects for percussa ssp development 
+covers many other aspects for percussa ssp development.
+
 VST3 SDK - https://www.steinberg.net/developers/
+
 Percussa SSP SDK - https://sw13072022.s3.us-west-1.amazonaws.com/arm-rockchip-linux-gnueabihf_sdk-buildroot.tar.gz
