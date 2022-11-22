@@ -20,9 +20,10 @@ However, I would recommend, installing a Virtual Machine (VM), and run Linux und
 
 # Getting Started
 
-There are two steps for creating Percussa SSP modules
+There are two steps for creating Percussa SSP modules:
 
 first, is to create a 'development environment', covered in [docs/DEVENV.md](docs/DEVENV.md)
+
 second, is to download projects, and build them, covered in [docs/BUILDING.md](docs/BUILDING.md)
 
 
